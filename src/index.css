@@ -65,21 +65,22 @@ html,
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter Tight', 'Inter', system-ui, sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
-  font-feature-settings: 'ss01';
+  font-feature-settings: 'ss01', 'cv11';
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* .font-serif retained for API compatibility, but now maps to Inter Tight heavy */
 .font-serif {
-  font-family: 'Cormorant Garamond', 'Garamond', serif;
-  font-weight: 400;
-  font-feature-settings: 'liga', 'dlig';
+  font-family: 'Inter Tight', 'Inter', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.035em;
 }
 
 .tracking-tightest {
-  letter-spacing: -0.02em;
+  letter-spacing: -0.045em;
 }
 
 .ink-text { color: var(--ink); }
@@ -100,9 +101,9 @@ body {
 .hairline-strong { border-bottom: 1px solid var(--ink-soft); }
 
 .ornament {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Inter Tight', sans-serif;
   color: var(--terra);
-  font-weight: 400;
+  font-weight: 600;
 }
 
 ::selection { background: var(--terra); color: var(--paper); }
@@ -180,14 +181,14 @@ body {
 }
 
 .drop {
-  font-size: 5.5rem;
-  line-height: 0.85;
+  font-size: 5rem;
+  line-height: 0.82;
   float: left;
   padding: 0.05em 0.18em 0 0;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Inter Tight', sans-serif;
   color: var(--terra);
-  font-weight: 500;
-  font-style: italic;
+  font-weight: 900;
+  letter-spacing: -0.05em;
 }
 
 .label-tag {
@@ -209,11 +210,12 @@ details summary::-webkit-details-marker { display: none; }
   align-items: center;
   justify-content: center;
   z-index: 100;
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
+  font-family: 'Inter Tight', sans-serif;
+  font-weight: 500;
   color: var(--muted);
-  font-size: 18px;
-  letter-spacing: 0.06em;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
 .tnum {

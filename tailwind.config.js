@@ -20,8 +20,9 @@ export default {
         'lagoon-soft': '#0E0C0A',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['"Cormorant Garamond"', 'Garamond', 'serif'],
+        sans: ['"Inter Tight"', 'Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Inter Tight"', 'Inter', 'sans-serif'],
+        display: ['"Inter Tight"', 'sans-serif'],
       },
     },
   },
