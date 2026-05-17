@@ -1,0 +1,61 @@
+// Roteiros sugeridos
+export const ITINERARIES = [
+  {
+    id: '1d',
+    title: 'Um dia — o essencial',
+    duration: '1 dia · ~7h de circulação',
+    blurb: 'Para quem só tem o sábado. Foco nos pavilhões oficiais e um respiro fora.',
+    steps: [
+      { time: '09:30', stop: 'Giardini · Padiglione Centrale', detail: 'Comece pela mostra principal. Otobong Nkanga reveste a entrada com tijolos venezianos.' },
+      { time: '11:30', stop: 'Pavilhões dos Giardini', detail: 'Priorize Brasil, EUA, Áustria, Grã-Bretanha e Países Nórdicos. ~2h.' },
+      { time: '13:30', stop: "Almoço · Sant'Elena", detail: "Ostaria del Garanghelo ou um cicchetti rápido na Via Garibaldi." },
+      { time: '14:30', stop: 'Arsenale · vaporetto-shuttle', detail: 'O shuttle Giardini→Arsenale está incluso no ingresso. 8 min.' },
+      { time: '14:45', stop: 'Arsenale · Tese delle Vergini', detail: 'Pavilhão Itália (Chiara Camoni) + China + Israel. ~2h30.' },
+      { time: '17:30', stop: 'Vaporetto Linha 1 → Salute', detail: 'Saia pelo Riva e pegue a Linha 1. 12 min até Salute.' },
+      { time: '18:00', stop: 'Punta della Dogana', detail: 'Lorna Simpson "Third Person". Fica aberto até 19h. Aperitivo no Hotel Bauer ao pôr do sol.' },
+    ],
+  },
+  {
+    id: '2d',
+    title: 'Dois dias — Pinault e a Sereníssima',
+    duration: '2 dias · ritmo confortável',
+    blurb: 'Bienal completa + coleção Pinault + ilhas próximas.',
+    steps: [
+      { time: 'Dia 1 · manhã', stop: 'Giardini', detail: 'Mostra principal + pavilhões — 4h de pé.' },
+      { time: 'Dia 1 · 14h', stop: 'Arsenale', detail: 'Atravesse de shuttle e percorra Corderie + Tese delle Vergini.' },
+      { time: 'Dia 1 · 18h', stop: 'Querini Stampalia (Castello)', detail: 'The Dreamer + Ding Yi. Pavilhão da Geórgia no mesmo prédio. ~12 min a pé do Arsenale.' },
+      { time: 'Dia 2 · 10h', stop: 'Palazzo Grassi (San Samuele)', detail: 'Michael Armitage. Vaporetto 2 de San Zaccaria, 12 min.' },
+      { time: 'Dia 2 · 12h30', stop: 'Punta della Dogana', detail: 'Lorna Simpson + Paulo Nazareth. Travessia rápida da Accademia.' },
+      { time: 'Dia 2 · 15h', stop: 'Peggy Guggenheim', detail: 'Mostra "Peggy in London". 8 min a pé desde Punta Dogana.' },
+      { time: 'Dia 2 · 17h', stop: 'Vaporetto 2 → San Giorgio Maggiore', detail: '5 min. Horst P. Horst na Fondazione Cini + subir ao campanário.' },
+    ],
+  },
+  {
+    id: '3d',
+    title: 'Três dias — em tons menores',
+    duration: '3 dias · contemplativo',
+    blurb: 'Para mergulhar fundo. Inclui Anish Kapoor, Marina Abramović e o Vaticano.',
+    steps: [
+      { time: 'Dia 1', stop: 'Giardini', detail: 'Dia inteiro. Sem pressa. Almoço dentro dos jardins.' },
+      { time: 'Dia 2 · manhã', stop: 'Arsenale + Eventos Colaterais de Castello', detail: 'Pavilhões + Wales, Catalunha, Hong Kong, Taiwan, Geórgia (Querini Stampalia).' },
+      { time: 'Dia 2 · tarde', stop: 'Marina Abramović · Gallerie dell\'Accademia', detail: '"Transforming Energy". Primeira mulher viva celebrada na Accademia.' },
+      { time: 'Dia 2 · final da tarde', stop: 'Punta della Dogana + Peggy Guggenheim', detail: 'Triângulo de Dorsoduro.' },
+      { time: 'Dia 3 · manhã', stop: 'Anish Kapoor · Palazzo Manfrin', detail: 'Cannaregio. ~100 modelos arquitetônicos + nova "At the Edge of the World".' },
+      { time: 'Dia 3 · tarde', stop: 'Pavilhão do Vaticano', detail: 'Brian Eno, FKA Twigs, Patti Smith e mais 21 artistas. Duas sedes em Cannaregio e Castello.' },
+      { time: 'Dia 3 · pôr do sol', stop: 'San Giorgio Maggiore', detail: 'Fondazione Cini (Horst P. Horst, Baselitz) + Le Stanze del Vetro + campanário.' },
+    ],
+  },
+  {
+    id: 'rain',
+    title: 'Roteiro de chuva',
+    duration: 'meio-dia · todo coberto',
+    blurb: 'Quando a aqua alta avisa, fique entre palazzi conectados.',
+    steps: [
+      { time: '10:00', stop: 'Palazzo Grassi', detail: 'Armitage + Kanwar. Edifício enorme, dá facilmente 2h.' },
+      { time: '12:30', stop: "Almoço · Osteria al Squero", detail: '4 min a pé de Palazzo Grassi.' },
+      { time: '14:00', stop: 'Punta della Dogana', detail: 'Vaporetto rápido. Lorna Simpson em ambiente coberto.' },
+      { time: '16:00', stop: 'Peggy Guggenheim', detail: '8 min coberto pelas calle.' },
+      { time: '18:00', stop: 'SMAC · Procuratie Vecchie', detail: 'Lee Ufan + Boetti. Sob a arcada da Piazza San Marco.' },
+    ],
+  },
+];
