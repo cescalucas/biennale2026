@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import VeniceMap from './VeniceMap.jsx';
 import { TIME } from '../lib/travelTimes.js';
-import { biosFor } from '../lib/dataStore.js';
+import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
 
 const FILTER_BUTTONS = [
   { id: 'all', label: 'Todos' },
@@ -137,11 +137,14 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
                   </div>
                 </div>
               )}
-              <div className="mt-5 flex gap-2">
-                <button onClick={() => onOpenDetail && onOpenDetail(sel.id)} className="pillbtn px-3 py-1.5 text-[11px] uppercase tracking-widest border border-ink flex-1">
+              <a href={mapsUrlFor(sel)} target="_blank" rel="noreferrer" className="mt-5 pillbtn bg-terra text-paper px-3 py-2 text-[11px] uppercase tracking-widest font-semibold flex items-center justify-center gap-2 no-underline" style={{ color: '#FFFFFF', border: '1px solid var(--terra)' }}>
+                <span aria-hidden="true">↗</span> Abrir no Google Maps
+              </a>
+              <div className="mt-2 flex gap-2">
+                <button onClick={() => onOpenDetail && onOpenDetail(sel.id)} className="pillbtn px-3 py-1.5 text-[11px] uppercase tracking-widest flex-1" style={{ border: '1px solid var(--ink)' }}>
                   Ver detalhes
                 </button>
-                <button onClick={() => setSelectedId(null)} className="pillbtn px-3 py-1.5 text-[11px] uppercase tracking-widest border border-line muted-text">
+                <button onClick={() => setSelectedId(null)} className="pillbtn px-3 py-1.5 text-[11px] uppercase tracking-widest muted-text" style={{ border: '1px solid var(--line)' }}>
                   Limpar
                 </button>
               </div>

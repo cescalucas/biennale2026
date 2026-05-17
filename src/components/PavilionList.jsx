@@ -1,4 +1,4 @@
-import { biosFor } from '../lib/dataStore.js';
+import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
 
 export default function PavilionList({ area, data, mainExhibition, appData, onSelect }) {
   const meta =
@@ -102,9 +102,14 @@ export default function PavilionList({ area, data, mainExhibition, appData, onSe
                     {p.note}
                   </p>
                 )}
-                <button onClick={() => onSelect(p.id)} className="mt-6 text-[12px] uppercase tracking-widest terra-text hover:underline">
-                  Ver detalhes →
-                </button>
+                <div className="mt-6 flex flex-col gap-2">
+                  <button onClick={() => onSelect(p.id)} className="text-[12px] uppercase tracking-widest terra-text hover:underline text-left">
+                    Ver detalhes →
+                  </button>
+                  <a href={mapsUrlFor(p)} target="_blank" rel="noreferrer" className="text-[12px] uppercase tracking-widest muted-text hover:text-ink hover:underline text-left">
+                    ↗ Google Maps
+                  </a>
+                </div>
               </div>
               <div className="md:col-span-8">
                 {bios.length > 0 ? (

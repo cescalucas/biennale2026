@@ -121,3 +121,12 @@ export async function loadData() {
 export function biosFor(data, venueId) {
   return (data.venueArtists[venueId] || []).map((slug) => ({ key: slug, ...data.bios[slug] }));
 }
+
+// Monta o URL do Google Maps para um venue.
+// Prioriza o address (mais preciso); cai pro name se não houver.
+// Sempre inclui "Venezia, Italia" para garantir a cidade.
+export function mapsUrlFor(venue) {
+  if (!venue) return null;
+  const query = [venue.address || venue.name, 'Venezia', 'Italia'].filter(Boolean).join(', ');
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}

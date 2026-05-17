@@ -1,4 +1,4 @@
-import { biosFor } from '../lib/dataStore.js';
+import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
 
 export default function Collateral({ data, appData, onSelect }) {
   const artistCount = data.reduce((sum, p) => sum + (appData.venueArtists[p.id]?.length || 0), 0);
@@ -55,9 +55,14 @@ export default function Collateral({ data, appData, onSelect }) {
                     <dd className="ink-text mt-0.5 italic">{appData.zoneNames[c.zone]}</dd>
                   </div>
                 </dl>
-                <button onClick={() => onSelect(c.id)} className="mt-6 text-[12px] uppercase tracking-widest terra-text hover:underline">
-                  Ver detalhes →
-                </button>
+                <div className="mt-6 flex flex-col gap-2">
+                  <button onClick={() => onSelect(c.id)} className="text-[12px] uppercase tracking-widest terra-text hover:underline text-left">
+                    Ver detalhes →
+                  </button>
+                  <a href={mapsUrlFor(c)} target="_blank" rel="noreferrer" className="text-[12px] uppercase tracking-widest muted-text hover:text-ink hover:underline text-left">
+                    ↗ Google Maps
+                  </a>
+                </div>
               </div>
               <div className="md:col-span-8">
                 {bios.length > 0 && (

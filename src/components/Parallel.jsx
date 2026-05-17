@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { biosFor } from '../lib/dataStore.js';
+import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
 
 export default function Parallel({ data, appData, onSelect }) {
   const byOrg = useMemo(() => {
@@ -77,9 +77,14 @@ export default function Parallel({ data, appData, onSelect }) {
                       {it.note}
                     </p>
                   )}
-                  <button onClick={() => onSelect(it.id)} className="mt-5 text-[12px] uppercase tracking-widest terra-text hover:underline">
-                    Ver detalhes →
-                  </button>
+                  <div className="mt-5 flex flex-col gap-2">
+                    <button onClick={() => onSelect(it.id)} className="text-[12px] uppercase tracking-widest terra-text hover:underline text-left">
+                      Ver detalhes →
+                    </button>
+                    <a href={mapsUrlFor(it)} target="_blank" rel="noreferrer" className="text-[12px] uppercase tracking-widest muted-text hover:text-ink hover:underline text-left">
+                      ↗ Google Maps
+                    </a>
+                  </div>
                 </div>
                 <div className="md:col-span-8">
                   {bios.length > 0 && (

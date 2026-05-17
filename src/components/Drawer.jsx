@@ -1,4 +1,4 @@
-import { biosFor } from '../lib/dataStore.js';
+import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
 
 export default function Drawer({ venueId, appData, onClose, onSeeOnMap }) {
   const v = venueId ? appData.venuesById[venueId] : null;
@@ -93,11 +93,14 @@ export default function Drawer({ venueId, appData, onClose, onSeeOnMap }) {
                 participantes.
               </div>
             )}
-            <div className="mt-12 hairline-t pt-6 flex flex-wrap gap-3">
-              <button onClick={() => onSeeOnMap(v.id)} className="pillbtn px-5 py-3 border border-ink text-[12px] uppercase tracking-widest">
-                Ver no mapa →
+            <div className="mt-12 pt-6 flex flex-wrap gap-0" style={{ borderTop: '1px solid var(--ink)' }}>
+              <a href={mapsUrlFor(v)} target="_blank" rel="noreferrer" className="pillbtn bg-terra text-paper px-5 py-3 text-[12px] uppercase tracking-widest font-semibold no-underline inline-flex items-center gap-2" style={{ color: '#FFFFFF', border: '1px solid var(--terra)' }}>
+                <span aria-hidden="true">↗</span> Abrir no Google Maps
+              </a>
+              <button onClick={() => onSeeOnMap(v.id)} className="pillbtn px-5 py-3 text-[12px] uppercase tracking-widest" style={{ border: '1px solid var(--ink)', borderLeft: 0 }}>
+                Ver no mapa esquemático
               </button>
-              <button onClick={onClose} className="pillbtn px-5 py-3 border border-line text-[12px] uppercase tracking-widest muted-text">
+              <button onClick={onClose} className="pillbtn px-5 py-3 text-[12px] uppercase tracking-widest muted-text" style={{ border: '1px solid var(--line)', borderLeft: 0 }}>
                 Fechar
               </button>
             </div>
