@@ -5,48 +5,43 @@ export default function VeniceMap({ appData, selectedId, setSelectedId, hoveredI
 
   const colorFor = (area) =>
     area === 'giardini'
-      ? '#A03E2E'
+      ? '#E1251B'
       : area === 'arsenale'
-      ? '#6E2A20'
+      ? '#B81C13'
       : area === 'city'
-      ? '#3D352C'
+      ? '#9A9A9A'
       : area === 'collateral'
-      ? '#2C5F66'
+      ? '#6B6B6B'
       : area === 'parallel'
-      ? '#B8893A'
-      : '#1A1612';
+      ? '#000000'
+      : '#000000';
 
   return (
     <div className="map-container rounded-sm overflow-hidden" style={{ aspectRatio: '1100/720' }}>
       <svg viewBox="0 0 1100 720" className="w-full h-full" style={{ display: 'block' }}>
         <defs>
-          <pattern id="water" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(8)">
-            <rect width="14" height="14" fill="#B3C6C5" />
-            <path d="M 0 7 Q 3.5 4 7 7 T 14 7" stroke="#9DB4B2" strokeWidth="0.6" fill="none" opacity="0.5" />
-          </pattern>
-          <pattern id="land" width="6" height="6" patternUnits="userSpaceOnUse">
-            <rect width="6" height="6" fill="#EFE5CC" />
-            <circle cx="1" cy="1" r="0.3" fill="#D8C9A6" opacity="0.5" />
+          <pattern id="water" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="#EFEFEF" />
+            <line x1="0" y1="20" x2="20" y2="0" stroke="#E0E0E0" strokeWidth="0.6" />
           </pattern>
         </defs>
         <rect width="1100" height="720" fill="url(#water)" />
-        <path d="M 80 140 Q 250 110 430 130 Q 580 145 690 175 L 720 195 Q 700 240 660 270 L 510 320 Q 410 340 330 345 L 270 350 Q 190 355 150 340 L 100 320 Q 70 270 75 220 Z" fill="url(#land)" stroke="#B8AB87" strokeWidth="1" />
-        <path d="M 175 360 Q 245 350 320 365 Q 380 380 410 410 L 420 460 Q 380 490 320 495 Q 240 500 195 485 Q 165 460 165 415 Z" fill="url(#land)" stroke="#B8AB87" strokeWidth="1" />
-        <path d="M 145 510 Q 240 500 380 515 Q 480 525 540 545 L 600 575 Q 640 590 620 615 Q 540 645 420 645 Q 290 645 200 625 Q 140 595 135 555 Z" fill="url(#land)" stroke="#B8AB87" strokeWidth="1" />
-        <path d="M 460 380 Q 540 360 620 365 Q 690 375 740 395 L 770 420 Q 780 460 750 495 Q 700 530 650 540 L 590 555 Q 540 565 500 555 Q 465 540 450 510 L 440 470 Q 445 420 460 380 Z" fill="url(#land)" stroke="#B8AB87" strokeWidth="1" />
-        <path d="M 740 380 Q 830 370 920 380 Q 980 390 1020 415 L 1040 460 Q 1030 495 990 510 L 940 525 Q 880 530 830 520 L 780 510 Q 740 495 730 460 Z" fill="url(#land)" stroke="#B8AB87" strokeWidth="1" />
-        <path d="M 220 670 Q 350 660 510 665 Q 620 670 690 685 L 695 705 Q 600 715 460 712 Q 320 710 230 700 Z" fill="url(#land)" stroke="#B8AB87" strokeWidth="1" />
-        <ellipse cx="660" cy="665" rx="35" ry="14" fill="url(#land)" stroke="#B8AB87" strokeWidth="1" />
-        <path d="M 100 320 Q 180 360 230 400 Q 290 440 320 470 Q 360 500 410 510 Q 460 530 510 550 Q 560 580 600 600 Q 620 610 640 605" fill="none" stroke="#9DB4B2" strokeWidth="14" strokeLinecap="round" opacity="0.85" />
-        <path d="M 100 320 Q 180 360 230 400 Q 290 440 320 470 Q 360 500 410 510 Q 460 530 510 550 Q 560 580 600 600 Q 620 610 640 605" fill="none" stroke="#7FA29F" strokeWidth="1" strokeDasharray="2 6" opacity="0.7" />
+        <path d="M 80 140 Q 250 110 430 130 Q 580 145 690 175 L 720 195 Q 700 240 660 270 L 510 320 Q 410 340 330 345 L 270 350 Q 190 355 150 340 L 100 320 Q 70 270 75 220 Z" fill="#FFFFFF" stroke="#000000" strokeWidth="1" />
+        <path d="M 175 360 Q 245 350 320 365 Q 380 380 410 410 L 420 460 Q 380 490 320 495 Q 240 500 195 485 Q 165 460 165 415 Z" fill="#FFFFFF" stroke="#000000" strokeWidth="1" />
+        <path d="M 145 510 Q 240 500 380 515 Q 480 525 540 545 L 600 575 Q 640 590 620 615 Q 540 645 420 645 Q 290 645 200 625 Q 140 595 135 555 Z" fill="#FFFFFF" stroke="#000000" strokeWidth="1" />
+        <path d="M 460 380 Q 540 360 620 365 Q 690 375 740 395 L 770 420 Q 780 460 750 495 Q 700 530 650 540 L 590 555 Q 540 565 500 555 Q 465 540 450 510 L 440 470 Q 445 420 460 380 Z" fill="#FFFFFF" stroke="#000000" strokeWidth="1" />
+        <path d="M 740 380 Q 830 370 920 380 Q 980 390 1020 415 L 1040 460 Q 1030 495 990 510 L 940 525 Q 880 530 830 520 L 780 510 Q 740 495 730 460 Z" fill="#FFFFFF" stroke="#000000" strokeWidth="1" />
+        <path d="M 220 670 Q 350 660 510 665 Q 620 670 690 685 L 695 705 Q 600 715 460 712 Q 320 710 230 700 Z" fill="#FFFFFF" stroke="#000000" strokeWidth="1" />
+        <ellipse cx="660" cy="665" rx="35" ry="14" fill="#FFFFFF" stroke="#000000" strokeWidth="1" />
+        <path d="M 100 320 Q 180 360 230 400 Q 290 440 320 470 Q 360 500 410 510 Q 460 530 510 550 Q 560 580 600 600 Q 620 610 640 605" fill="none" stroke="#C8CCCE" strokeWidth="14" strokeLinecap="round" opacity="0.95" />
         {showVaporetto && (
-          <g className="vap-line" stroke="#A03E2E" strokeWidth="1.5" fill="none">
+          <g className="vap-line" stroke="#E1251B" strokeWidth="1.5" fill="none">
             <path d="M 345 415 Q 405 460 470 500 Q 525 545 585 600 Q 670 580 790 520 Q 880 510 920 495" />
             <path d="M 420 645 Q 470 620 505 600 Q 460 535 455 530" />
             <path d="M 505 600 Q 545 590 585 600 Q 620 620 660 640" />
           </g>
         )}
-        <g fill="#6B6157" fontFamily="Cormorant Garamond" fontSize="13" fontStyle="italic" letterSpacing="2">
+        <g fill="#6B6B6B" fontFamily="'Inter Tight', 'Inter', sans-serif" fontSize="11" fontWeight="700" letterSpacing="2.5">
           <text x="280" y="220">CANNAREGIO</text>
           <text x="220" y="430">SAN POLO</text>
           <text x="180" y="395">SANTA CROCE</text>
@@ -55,8 +50,8 @@ export default function VeniceMap({ appData, selectedId, setSelectedId, hoveredI
           <text x="850" y="430">CASTELLO</text>
           <text x="380" y="695">GIUDECCA</text>
           <text x="610" y="690" fontSize="9">S. GIORGIO</text>
-          <text x="900" y="495" fontSize="11" fill="#A03E2E">GIARDINI</text>
-          <text x="755" y="465" fontSize="11" fill="#A03E2E">ARSENALE</text>
+          <text x="900" y="495" fontSize="11" fill="#E1251B">GIARDINI</text>
+          <text x="755" y="465" fontSize="11" fill="#E1251B">ARSENALE</text>
         </g>
         {appData.stops.map((s) => (
           <g key={s.id}>

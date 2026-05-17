@@ -27,8 +27,8 @@ export default function Drawer({ venueId, appData, onClose, onSeeOnMap }) {
                   {v.area === 'collateral' && 'Evento Colateral oficial'}
                   {v.area === 'parallel' && 'Exposição paralela · Museu'}
                 </div>
-                <h3 className="font-serif text-4xl md:text-5xl tracking-tightest ink-text leading-[0.95] mt-3">{v.name}</h3>
-                {v.title && <div className="font-serif italic text-xl muted-text mt-2">"{v.title}"</div>}
+                <h3 className="font-black text-4xl md:text-5xl tracking-tightest ink-text leading-[0.92] mt-3 uppercase">{v.name}</h3>
+                {v.title && <div className="italic text-lg muted-text mt-2 font-medium">"{v.title}"</div>}
               </div>
               <button onClick={onClose} className="text-2xl muted-text hover:terra-text leading-none">×</button>
             </div>
@@ -75,12 +75,12 @@ export default function Drawer({ venueId, appData, onClose, onSeeOnMap }) {
             )}
             {bios.length > 0 ? (
               <div className="mt-10">
-                <div className="ornament text-2xl">❦</div>
+                <div className="w-10 h-1 bg-terra"></div>
                 <div className="label-tag terra-text mt-2">{bios.length > 1 ? 'Os artistas em exposição' : 'O artista em exposição'}</div>
                 <div className="mt-6 space-y-8">
                   {bios.map((b) => (
                     <article key={b.key}>
-                      <div className="font-serif text-2xl ink-text leading-tight">{b.name}</div>
+                      <div className="font-black text-2xl ink-text leading-[0.95] uppercase tracking-tightest">{b.name}</div>
                       <div className="label-tag muted-text mt-1">{b.years}</div>
                       <p className="text-[14px] ink-text mt-3 leading-relaxed">{b.bio}</p>
                     </article>

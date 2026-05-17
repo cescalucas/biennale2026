@@ -86,8 +86,8 @@ export default function Artists({ appData, onSelectVenue }) {
     <div>
       <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline">
         <div className="md:col-span-8">
-          <div className="label-tag terra-text">VI · ÍNDICE DE ARTISTAS</div>
-          <h2 className="font-serif text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.9]">
+          <div className="label-tag terra-text">06 · ÍNDICE DE ARTISTAS</div>
+          <h2 className="font-black text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.88] uppercase">
             Quem está
             <br />
             <em>em Veneza</em>
@@ -125,15 +125,15 @@ export default function Artists({ appData, onSelectVenue }) {
 
       {Object.entries(groups).map(([groupName, arr]) => (
         <section key={groupName} className="pt-10">
-          <div className="hairline-t pt-6 mb-6 flex items-end justify-between">
-            <div className="font-serif text-5xl tracking-tightest italic terra-text leading-none">{groupName}</div>
+          <div className="pt-6 mb-6 flex items-end justify-between" style={{ borderTop: '2px solid var(--ink)' }}>
+            <div className="font-black text-5xl tracking-tightest leading-none uppercase" style={{ color: 'var(--terra)' }}>{groupName}</div>
             <div className="label-tag muted-text">{arr.length} artista(s)</div>
           </div>
           <div className="space-y-8">
             {arr.map((a) => (
-              <article key={a.key + a.venueId} className="grid md:grid-cols-12 gap-6 hairline pb-7">
+              <article key={a.key + a.venueId} className="grid md:grid-cols-12 gap-6 pb-7" style={{ borderBottom: '1px solid var(--line)' }}>
                 <div className="md:col-span-4">
-                  <div className="font-serif text-2xl md:text-3xl ink-text leading-tight">{a.name}</div>
+                  <div className="font-black text-2xl md:text-3xl ink-text leading-[0.95] uppercase tracking-tightest">{a.name}</div>
                   <div className="label-tag muted-text mt-1.5">{a.years}</div>
                   <button onClick={() => onSelectVenue(a.venueId)} className="mt-3 text-[12px] terra-text hover:underline text-left leading-snug">
                     {a.venueArea === 'main' && 'Mostra principal · '}
@@ -155,7 +155,7 @@ export default function Artists({ appData, onSelectVenue }) {
         </section>
       ))}
 
-      {sorted.length === 0 && <div className="py-16 text-center font-serif italic text-2xl muted-text">Nenhum artista encontrado.</div>}
+      {sorted.length === 0 && <div className="py-16 text-center italic text-xl muted-text font-medium">Nenhum artista encontrado.</div>}
     </div>
   );
 }

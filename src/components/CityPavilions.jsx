@@ -12,8 +12,8 @@ export default function CityPavilions({ data, onSelect }) {
     <div>
       <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline">
         <div className="md:col-span-8">
-          <div className="label-tag terra-text">III · PAVILHÕES NA CIDADE</div>
-          <h2 className="font-serif text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.9]">
+          <div className="label-tag terra-text">03 · PAVILHÕES NA CIDADE</div>
+          <h2 className="font-black text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.88] uppercase">
             Sem teto fixo
             <br />
             <em>nos Giardini</em>
@@ -44,15 +44,15 @@ export default function CityPavilions({ data, onSelect }) {
         <div className="label-tag muted-text">{filtered.length} resultado(s)</div>
       </section>
 
-      <section className="pt-10 grid md:grid-cols-2 gap-px bg-line">
+      <section className="pt-10 grid md:grid-cols-2 gap-4">
         {filtered.map((c, i) => (
-          <article key={c.id} className="bg-paper p-7 card cursor-pointer flex flex-col" onClick={() => onSelect(c.id)}>
+          <article key={c.id} className="bg-paper p-6 card cursor-pointer flex flex-col" onClick={() => onSelect(c.id)} style={{ border: '1px solid var(--ink)' }}>
             <div className="flex items-baseline justify-between">
-              <div className="label-tag muted-text">№ {String(i + 1).padStart(3, '0')}</div>
-              {c.highlight && <div className="label-tag terra-text">★ Estreia / destaque</div>}
+              <div className="font-bold text-[11px] tracking-widest tnum">{String(i + 1).padStart(3, '0')}</div>
+              {c.highlight && <div className="bg-terra text-paper px-2 py-0.5 text-[10px] font-bold tracking-widest" style={{ color: 'var(--paper)' }}>ESTREIA</div>}
             </div>
-            <h3 className="font-serif text-2xl ink-text mt-3 leading-tight">{c.name}</h3>
-            {c.title && <div className="font-serif italic text-base muted-text mt-1">"{c.title}"</div>}
+            <h3 className="font-black text-2xl ink-text mt-3 leading-[0.95] uppercase tracking-tightest">{c.name}</h3>
+            {c.title && <div className="italic text-sm muted-text mt-1 font-medium">"{c.title}"</div>}
             <div className="mt-4 text-[13px] ink-text leading-relaxed">
               {c.artists && (
                 <div>

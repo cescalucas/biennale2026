@@ -28,8 +28,8 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
     <div>
       <section className="pt-12 pb-8 grid md:grid-cols-12 gap-6 hairline">
         <div className="md:col-span-8">
-          <div className="label-tag terra-text">VII · MAPA</div>
-          <h2 className="font-serif text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.9]">
+          <div className="label-tag terra-text">07 · MAPA</div>
+          <h2 className="font-black text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.88] uppercase">
             Veneza
             <br />
             <em>em pontos</em>
@@ -43,11 +43,11 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
           <div className="label-tag muted-text">Legenda</div>
           <div className="mt-3 space-y-1.5 text-[12px]">
             {[
-              ['#A03E2E', 'Giardini'],
-              ['#6E2A20', 'Arsenale'],
-              ['#3D352C', 'Pavilhões na cidade'],
-              ['#2C5F66', 'Eventos Colaterais'],
-              ['#B8893A', 'Museus / Paralelas'],
+              ['#E1251B', 'Giardini'],
+              ['#B81C13', 'Arsenale'],
+              ['#9A9A9A', 'Pavilhões na cidade'],
+              ['#6B6B6B', 'Eventos Colaterais'],
+              ['#000000', 'Museus / Paralelas'],
             ].map(([c, l]) => (
               <div key={l} className="flex items-center md:justify-end gap-2">
                 <span style={{ width: 10, height: 10, background: c, borderRadius: '50%', display: 'inline-block' }} /> {l}
@@ -85,8 +85,8 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
         <div className="lg:col-span-4">
           {!sel && (
             <div className="border border-line bg-paper-2/40 p-8 h-full flex flex-col justify-center">
-              <div className="ornament text-3xl">↶</div>
-              <div className="font-serif text-2xl ink-text mt-4 leading-tight">Selecione um ponto no mapa</div>
+              <div className="w-12 h-1 bg-terra mb-4"></div>
+              <div className="font-black text-2xl uppercase tracking-tightest ink-text mt-4 leading-tight">Selecione um ponto no mapa</div>
               <div className="text-[13px] muted-text mt-3 leading-relaxed">
                 Os tempos de deslocamento a partir do ponto escolhido aparecerão aqui, ordenados do mais próximo ao mais distante.
               </div>
@@ -95,8 +95,8 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
           {sel && (
             <div className="border border-line bg-paper p-6">
               <div className="label-tag terra-text">Origem selecionada</div>
-              <div className="font-serif text-2xl ink-text mt-2 leading-tight">{sel.name}</div>
-              {sel.title && <div className="font-serif italic muted-text">"{sel.title}"</div>}
+              <div className="font-black text-xl uppercase tracking-tightest ink-text mt-2 leading-tight">{sel.name}</div>
+              {sel.title && <div className="italic font-medium muted-text text-sm mt-1">"{sel.title}"</div>}
               <div className="hairline mt-3 pt-3 text-[12.5px] muted-text">
                 {sel.artists && (
                   <div>
@@ -118,7 +118,7 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
                   {distances.slice(0, 28).map((d) => (
                     <div key={d.id} className="flex items-baseline justify-between gap-3 cursor-pointer group" onClick={() => setSelectedId(d.id)}>
                       <div className="text-[13px] ink-text group-hover:terra-text leading-tight flex-1">{d.name}</div>
-                      <div className="text-[13px] font-serif italic muted-text whitespace-nowrap">{d.minutes === 0 ? 'mesmo local' : `${d.minutes} min`}</div>
+                      <div className="text-[13px] italic font-medium tnum muted-text whitespace-nowrap">{d.minutes === 0 ? 'mesmo local' : `${d.minutes} min`}</div>
                     </div>
                   ))}
                 </div>
@@ -154,7 +154,7 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
         <summary className="hairline pb-3 mb-5 flex items-end justify-between cursor-pointer">
           <div>
             <div className="label-tag terra-text">+ Apêndice</div>
-            <div className="font-serif text-2xl ink-text mt-1">Matriz completa de deslocamento</div>
+            <div className="font-black text-2xl uppercase tracking-tightest ink-text mt-1">Matriz completa de deslocamento</div>
           </div>
           <div className="label-tag muted-text">minutos · rota mais rápida</div>
         </summary>
@@ -181,7 +181,7 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
                     return (
                       <td
                         key={b}
-                        className="text-center py-2 px-3 font-serif italic"
+                        className="text-center py-2 px-3 italic font-medium tnum"
                         style={{
                           background: isSame ? 'var(--ink)' : `rgba(160,62,46,${intensity * 0.18})`,
                           color: isSame ? 'var(--paper)' : 'var(--ink)',
@@ -198,7 +198,7 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
           <div className="mt-3 text-[11px] muted-text grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-1">
             {appData.zoneList.map((z) => (
               <div key={z}>
-                <span className="font-serif italic terra-text mr-1">{z}</span> {appData.zoneNames[z]}
+                <span className="italic font-medium tnum terra-text mr-1">{z}</span> {appData.zoneNames[z]}
               </div>
             ))}
           </div>

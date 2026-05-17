@@ -15,8 +15,8 @@ export default function Parallel({ data, appData, onSelect }) {
     <div>
       <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline">
         <div className="md:col-span-8">
-          <div className="label-tag terra-text">V · MUSEUS & INSTITUIÇÕES</div>
-          <h2 className="font-serif text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.9]">
+          <div className="label-tag terra-text">05 · MUSEUS & INSTITUIÇÕES</div>
+          <h2 className="font-black text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.88] uppercase">
             Em paralelo
             <br />
             <em>à Bienal</em>
@@ -38,18 +38,18 @@ export default function Parallel({ data, appData, onSelect }) {
 
       {Object.entries(byOrg).map(([org, items], orgIdx) => (
         <section key={org} className="pt-12">
-          <div className="hairline-t pt-8 mb-2">
+          <div className="pt-8 mb-2" style={{ borderTop: '2px solid var(--ink)' }}>
             <div className="label-tag terra-text">№ {String(orgIdx + 1).padStart(2, '0')} · Instituição</div>
-            <div className="font-serif text-4xl md:text-5xl tracking-tightest ink-text mt-2 leading-[0.95]">{org}</div>
+            <div className="font-black text-4xl md:text-5xl tracking-tightest ink-text mt-2 leading-[0.95] uppercase">{org}</div>
             <div className="text-[12px] muted-text mt-2">{items.length} mostra(s) durante a Bienal</div>
           </div>
           {items.map((it, i) => {
             const bios = biosFor(appData, it.id);
             return (
-              <article key={it.id} className="hairline-t mt-8 pt-10 grid md:grid-cols-12 gap-8 md:gap-10 fade-in">
+              <article key={it.id} className="mt-8 pt-10 grid md:grid-cols-12 gap-8 md:gap-10 fade-in" style={{ borderTop: '1px solid var(--line)' }}>
                 <div className="md:col-span-4">
-                  <div className="font-serif text-3xl italic terra-text">{String(i + 1).padStart(2, '0')}</div>
-                  <h4 className="font-serif text-2xl md:text-3xl ink-text mt-3 leading-tight">{it.name}</h4>
+                  <div className="font-black text-3xl tnum tracking-tight" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
+                  <h4 className="font-black text-2xl md:text-3xl ink-text mt-3 leading-[0.95] uppercase tracking-tightest">{it.name}</h4>
                   <dl className="mt-5 hairline pt-4 space-y-3 text-[13px]">
                     {it.curator && (
                       <div>
@@ -85,12 +85,12 @@ export default function Parallel({ data, appData, onSelect }) {
                   {bios.length > 0 && (
                     <div className="space-y-9">
                       {bios.map((b, idx) => (
-                        <div key={b.key} className={idx > 0 ? 'hairline-t pt-9' : ''}>
+                        <div key={b.key} className={idx > 0 ? 'pt-9' : ''} style={{ borderTop: idx > 0 ? '1px solid var(--line)' : 'none' }}>
                           <div className="grid grid-cols-12 gap-4">
                             <div className="col-span-12 md:col-span-3">
-                              <div className="label-tag muted-text">{bios.length > 1 ? `Artista ${idx + 1} de ${bios.length}` : 'O artista'}</div>
-                              <div className="font-serif text-2xl md:text-3xl ink-text mt-2 leading-tight">{b.name}</div>
-                              <div className="label-tag muted-text mt-1.5">{b.years}</div>
+                              <div className="label-tag muted-text">{bios.length > 1 ? `Artista ${idx + 1} / ${bios.length}` : 'O artista'}</div>
+                              <div className="font-black text-2xl md:text-3xl ink-text mt-2 leading-[0.95] uppercase tracking-tightest">{b.name}</div>
+                              <div className="label-tag muted-text mt-2">{b.years}</div>
                             </div>
                             <div className="col-span-12 md:col-span-9">
                               <p className="text-[14.5px] ink-text leading-relaxed">{b.bio}</p>
