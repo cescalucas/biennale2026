@@ -11,6 +11,17 @@ import MapView from './components/MapView.jsx';
 import Itineraries from './components/Itineraries.jsx';
 import Drawer from './components/Drawer.jsx';
 
+const THEME_KEY = 'biennale-theme';
+
+function readInitialTheme() {
+  if (typeof window === 'undefined') return 'dark';
+  try {
+    const stored = window.localStorage.getItem(THEME_KEY);
+    if (stored === 'light' || stored === 'dark') return stored;
+  } catch {}
+  return 'dark';
+}
+
 export default function App() {
   const [data, setData] = useState(null);
   const [view, setView] = useState('home');
@@ -19,10 +30,18 @@ export default function App() {
   const [mapFilter, setMapFilter] = useState('all');
   const [showVaporetto, setShowVaporetto] = useState(true);
   const [drawerId, setDrawerId] = useState(null);
+  const [theme, setTheme] = useState(readInitialTheme);
 
   useEffect(() => {
     loadData().then(setData);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try {
+      window.localStorage.setItem(THEME_KEY, theme);
+    } catch {}
+  }, [theme]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -46,7 +65,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen relative" style={{ zIndex: 2 }}>
-      <Header view={view} setView={goTo} />
+      <Header view={view} setView={goTo} theme={theme} setTheme={setTheme} />
       <main className="px-6 md:px-10 lg:px-16 max-w-[1480px] mx-auto pb-32 fade-in" key={view}>
         {view === 'home' && <Home data={data} setView={goTo} />}
         {view === 'giardini' && (

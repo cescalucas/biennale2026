@@ -29,7 +29,7 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
       <section className="pt-12 pb-8 grid md:grid-cols-12 gap-6 hairline">
         <div className="md:col-span-8">
           <div className="label-tag terra-text">07 · MAPA</div>
-          <h2 className="font-black text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.88] uppercase">
+          <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95]">
             Veneza
             <br />
             <em>em pontos</em>
@@ -43,11 +43,11 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
           <div className="label-tag muted-text">Legenda</div>
           <div className="mt-3 space-y-1.5 text-[12px]">
             {[
-              ['#E1251B', 'Giardini'],
-              ['#B81C13', 'Arsenale'],
-              ['#9A9A9A', 'Pavilhões na cidade'],
-              ['#6B6B6B', 'Eventos Colaterais'],
-              ['#000000', 'Museus / Paralelas'],
+              ['#C5A35E', 'Giardini'],
+              ['#A88A45', 'Arsenale'],
+              ['#8A8478', 'Pavilhões na cidade'],
+              ['#C9C2B3', 'Eventos Colaterais'],
+              ['#ECE5D6', 'Museus / Paralelas'],
             ].map(([c, l]) => (
               <div key={l} className="flex items-center md:justify-end gap-2">
                 <span style={{ width: 10, height: 10, background: c, borderRadius: '50%', display: 'inline-block' }} /> {l}
@@ -85,8 +85,8 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
         <div className="lg:col-span-4">
           {!sel && (
             <div className="border border-line bg-paper-2/40 p-8 h-full flex flex-col justify-center">
-              <div className="w-12 h-1 bg-terra mb-4"></div>
-              <div className="font-black text-2xl uppercase tracking-tightest ink-text mt-4 leading-tight">Selecione um ponto no mapa</div>
+              <div className="ornament text-3xl italic">❦</div>
+              <div className="font-serif italic text-2xl tracking-tightest ink-text mt-4 leading-tight">Selecione um ponto no mapa</div>
               <div className="text-[13px] muted-text mt-3 leading-relaxed">
                 Os tempos de deslocamento a partir do ponto escolhido aparecerão aqui, ordenados do mais próximo ao mais distante.
               </div>
@@ -95,8 +95,8 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
           {sel && (
             <div className="border border-line bg-paper p-6">
               <div className="label-tag terra-text">Origem selecionada</div>
-              <div className="font-black text-xl uppercase tracking-tightest ink-text mt-2 leading-tight">{sel.name}</div>
-              {sel.title && <div className="italic font-medium muted-text text-sm mt-1">"{sel.title}"</div>}
+              <div className="font-serif italic text-2xl tracking-tightest ink-text mt-2 leading-tight">{sel.name}</div>
+              {sel.title && <div className="muted-text text-sm mt-1">"{sel.title}"</div>}
               <div className="hairline mt-3 pt-3 text-[12.5px] muted-text">
                 {sel.artists && (
                   <div>
@@ -157,7 +157,7 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
         <summary className="hairline pb-3 mb-5 flex items-end justify-between cursor-pointer">
           <div>
             <div className="label-tag terra-text">+ Apêndice</div>
-            <div className="font-black text-2xl uppercase tracking-tightest ink-text mt-1">Matriz completa de deslocamento</div>
+            <div className="font-serif italic text-2xl tracking-tightest ink-text mt-1">Matriz completa de deslocamento</div>
           </div>
           <div className="label-tag muted-text">minutos · rota mais rápida</div>
         </summary>

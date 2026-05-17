@@ -7,7 +7,7 @@ export default function Collateral({ data, appData, onSelect }) {
       <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline">
         <div className="md:col-span-8">
           <div className="label-tag terra-text">04 · EVENTOS COLATERAIS</div>
-          <h2 className="font-black text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.88] uppercase">
+          <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95]">
             Espalhados
             <br />
             pela cidade
@@ -31,14 +31,14 @@ export default function Collateral({ data, appData, onSelect }) {
         {data.map((c, i) => {
           const bios = biosFor(appData, c.id);
           return (
-            <article key={c.id} className="py-12 grid md:grid-cols-12 gap-8 md:gap-10 fade-in" style={{ borderTop: '1px solid var(--ink)' }}>
+            <article key={c.id} className="py-14 grid md:grid-cols-12 gap-10 md:gap-12 fade-in" style={{ borderTop: '1px solid var(--line)' }}>
               <div className="md:col-span-4">
                 <div className="flex items-baseline justify-between">
-                  <div className="font-black text-3xl tnum tracking-tight" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
-                  <div className="bg-ink text-paper px-2 py-0.5 text-[10px] font-bold tracking-widest" style={{ color: 'var(--paper)' }}>COLATERAL</div>
+                  <div className="font-serif italic text-3xl tnum" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
+                  <div className="label-tag">Colateral</div>
                 </div>
-                <h3 className="font-black text-3xl tracking-tightest mt-4 ink-text leading-[0.95] uppercase">{c.name}</h3>
-                <div className="text-[13px] mt-2 ink-text italic font-medium">{c.org}</div>
+                <h3 className="font-serif italic text-4xl tracking-tightest mt-5 ink-text leading-[0.95]">{c.name}</h3>
+                <div className="text-[14px] mt-3 ink-text">{c.org}</div>
                 <dl className="mt-6 hairline pt-5 space-y-3 text-[13px]">
                   <div>
                     <dt className="label-tag muted-text">Endereço</dt>
@@ -71,9 +71,9 @@ export default function Collateral({ data, appData, onSelect }) {
                       <div key={b.key} className={idx > 0 ? 'pt-9' : ''} style={{ borderTop: idx > 0 ? '1px solid var(--line)' : 'none' }}>
                         <div className="grid grid-cols-12 gap-4">
                           <div className="col-span-12 md:col-span-3">
-                            <div className="label-tag muted-text">{bios.length > 1 ? `Artista ${idx + 1} / ${bios.length}` : 'O artista'}</div>
-                            <div className="font-black text-2xl md:text-3xl ink-text mt-2 leading-[0.95] uppercase tracking-tightest">{b.name}</div>
-                            <div className="label-tag muted-text mt-2">{b.years}</div>
+                            <div className="label-tag">{bios.length > 1 ? `Artista ${idx + 1} / ${bios.length}` : 'O artista'}</div>
+                            <div className="font-serif italic text-3xl ink-text mt-3 leading-[1.05]">{b.name}</div>
+                            <div className="label-tag mt-3">{b.years}</div>
                           </div>
                           <div className="col-span-12 md:col-span-9">
                             <p className="text-[14.5px] ink-text leading-relaxed">{b.bio}</p>

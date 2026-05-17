@@ -3,143 +3,199 @@
 @tailwind utilities;
 
 /*
-  Design system: Biennale di Venezia × MoMA
-  ─── white surface, black ink, single red accent ───
+  Design system com dois temas:
+  • [data-theme="dark"]  → Dark Institucional (Aesop · Document · OMA)
+  • [data-theme="light"] → Biennale × MoMA (papel branco · vermelho · preto)
+  Tipografia compartilhada: Cormorant Garamond italic (display) + Inter (body).
 */
-:root {
+
+:root,
+[data-theme='dark'] {
+  --paper: #14110E;
+  --paper-2: #1F1B16;
+  --paper-3: #28231C;
+  --ink: #ECE5D6;
+  --ink-soft: #C9C2B3;
+  --muted: #8A8478;
+  --muted-2: #5E5950;
+  --line: #2A2520;
+  --line-soft: #1F1B16;
+  --terra: #C44A2E;
+  --terra-deep: #9E3520;
+  --gold: #C5A35E;
+  --gold-deep: #A88A45;
+  --lagoon: #1A1714;
+  --lagoon-soft: #0E0C0A;
+
+  /* Tokens semânticos do mapa */
+  --map-bg: #0E0C0A;
+  --map-land: #ECE5D6;
+  --map-land-stroke: #3A352E;
+  --map-canal: #A8A296;
+  --map-text-dim: #8A8478;
+  --map-text-bright: #C5A35E;
+}
+
+[data-theme='light'] {
   --paper: #FFFFFF;
-  --paper-2: #F4F2EE;
-  --ink: #000000;
-  --ink-soft: #1A1A1A;
+  --paper-2: #F7F5F1;
+  --paper-3: #EFEDE7;
+  --ink: #0E0E0E;
+  --ink-soft: #2A2A2A;
   --muted: #6B6B6B;
   --muted-2: #9A9A9A;
-  --line: #000000;
-  --line-soft: #E5E5E5;
+  --line: #E5E3DE;
+  --line-soft: #F4F2EE;
   --terra: #E1251B;
   --terra-deep: #B81C13;
-  --lagoon: #C8CCCE;
-  --lagoon-soft: #EFEFEF;
-  --gold: #B8893A;
+  --gold: #A88440;
+  --gold-deep: #7E6128;
+  --lagoon: #EFEFEF;
+  --lagoon-soft: #FAFAFA;
+
+  --map-bg: #F4F2EE;
+  --map-land: #FFFFFF;
+  --map-land-stroke: #0E0E0E;
+  --map-canal: #B8BFC0;
+  --map-text-dim: #6B6B6B;
+  --map-text-bright: #E1251B;
 }
 
 html,
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: 'Inter Tight', 'Inter', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
-  font-feature-settings: 'ss01', 'cv11';
+  font-feature-settings: 'ss01';
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Backwards compatibility — components still reference these classes */
 .font-serif {
-  font-family: 'Inter Tight', 'Inter', sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.045em;
+  font-family: 'Cormorant Garamond', 'Garamond', serif;
+  font-weight: 400;
+  font-feature-settings: 'liga', 'dlig';
 }
 
 .tracking-tightest {
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
 }
 
 .ink-text { color: var(--ink); }
 .muted-text { color: var(--muted); }
 .terra-text { color: var(--terra); }
-.lagoon-text { color: var(--ink); }
+.gold-text { color: var(--gold); }
+.lagoon-text { color: var(--ink-soft); }
 .bg-paper { background-color: var(--paper); }
 .bg-paper-2 { background-color: var(--paper-2); }
-.bg-ink { background-color: var(--ink); }
-.bg-terra { background-color: var(--terra); }
+.bg-ink { background-color: var(--ink); color: var(--paper); }
+.bg-terra { background-color: var(--terra); color: var(--paper); }
+.bg-gold { background-color: var(--gold); color: var(--paper); }
 .bg-lagoon { background-color: var(--lagoon); }
-.border-line { border-color: var(--line-soft); }
-.border-ink { border-color: var(--ink); }
-.hairline { border-bottom: 1px solid var(--line-soft); }
-.hairline-t { border-top: 1px solid var(--line-soft); }
-.hairline-strong { border-bottom: 1px solid var(--ink); }
+.border-line { border-color: var(--line); }
+.border-ink { border-color: var(--ink-soft); }
+.hairline { border-bottom: 1px solid var(--line); }
+.hairline-t { border-top: 1px solid var(--line); }
+.hairline-strong { border-bottom: 1px solid var(--ink-soft); }
+
 .ornament {
-  font-family: 'Inter Tight', sans-serif;
+  font-family: 'Cormorant Garamond', serif;
   color: var(--terra);
-  font-weight: 700;
+  font-weight: 400;
 }
 
-::selection { background: var(--ink); color: var(--paper); }
-::-webkit-scrollbar { width: 10px; height: 10px; }
+::selection { background: var(--terra); color: var(--paper); }
+::-webkit-scrollbar { width: 12px; height: 12px; }
 ::-webkit-scrollbar-track { background: var(--paper); }
-::-webkit-scrollbar-thumb { background: #CCC; border-radius: 0; }
-::-webkit-scrollbar-thumb:hover { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--paper-3); }
+::-webkit-scrollbar-thumb:hover { background: var(--muted-2); }
 
-/* Pins / map */
-.pin { transition: transform 0.15s ease; transform-origin: center; }
-.pin:hover { transform: scale(1.35); }
-.pin-active { transform: scale(1.5); }
+.pin { transition: transform 0.2s ease; transform-origin: center; }
+.pin:hover { transform: scale(1.4); }
+.pin-active { transform: scale(1.55); }
 
-/* Navigation links */
 .nav-link {
   position: relative;
-  transition: color 0.2s;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: 11.5px;
+  transition: color 0.25s ease;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--ink-soft);
 }
 .nav-link::after {
   content: '';
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -6px;
-  height: 2px;
+  bottom: -8px;
+  height: 1px;
   background: var(--terra);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.25s ease;
+  transition: transform 0.3s ease;
 }
+.nav-link:hover { color: var(--ink); }
 .nav-link:hover::after,
 .nav-link.active::after { transform: scaleX(1); }
 .nav-link.active { color: var(--terra); }
 
-/* Pill buttons (filter chips, CTAs) */
 .pillbtn {
-  transition: all 0.15s;
+  transition: all 0.25s ease;
+  font-weight: 400;
+  letter-spacing: 0.06em;
   border-radius: 0;
-  font-weight: 600;
 }
-.pillbtn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.pillbtn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.pillbtn:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink) !important;
+}
+.pillbtn.active {
+  background: var(--terra);
+  color: var(--paper);
+  border-color: var(--terra) !important;
+}
 
-/* Cards */
-.card { transition: transform 0.18s ease, border-color 0.18s ease; }
-.card:hover { border-color: var(--ink); }
+.card {
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+.card:hover {
+  background: var(--paper-2);
+}
 
-.fade-in { animation: fadeIn 0.4s ease both; }
+.fade-in { animation: fadeIn 0.45s ease both; }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.vap-line { stroke-dasharray: 4 4; opacity: 0.7; }
+.vap-line {
+  stroke-dasharray: 4 4;
+  opacity: 0.6;
+}
 .map-container {
   background: var(--lagoon-soft);
-  border: 1px solid var(--ink);
+  border: 1px solid var(--line);
 }
 
-/* Drop-cap — institutional bold style */
 .drop {
-  font-size: 5rem;
-  line-height: 0.82;
+  font-size: 5.5rem;
+  line-height: 0.85;
   float: left;
   padding: 0.05em 0.18em 0 0;
-  font-family: 'Inter Tight', sans-serif;
+  font-family: 'Cormorant Garamond', serif;
   color: var(--terra);
-  font-weight: 900;
-  letter-spacing: -0.05em;
+  font-weight: 500;
+  font-style: italic;
 }
 
 .label-tag {
-  font-size: 10.5px;
-  letter-spacing: 0.18em;
+  font-size: 10px;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   font-weight: 500;
+  color: var(--muted);
 }
 
 details summary { cursor: pointer; list-style: none; }
@@ -153,15 +209,68 @@ details summary::-webkit-details-marker { display: none; }
   align-items: center;
   justify-content: center;
   z-index: 100;
-  font-family: 'Inter Tight', sans-serif;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 12px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
   color: var(--muted);
+  font-size: 18px;
+  letter-spacing: 0.06em;
 }
 
-/* Big numerals — tabular */
 .tnum {
   font-variant-numeric: tabular-nums;
+}
+
+input,
+textarea,
+select {
+  background: var(--paper-2);
+  color: var(--ink);
+  border-color: var(--line);
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted-2);
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--ink-soft);
+}
+
+/* === Theme toggle === */
+.theme-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.theme-toggle button {
+  padding: 6px 10px;
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.theme-toggle button:hover {
+  color: var(--ink);
+}
+.theme-toggle button.is-active {
+  background: var(--ink);
+  color: var(--paper);
+}
+.theme-toggle button + button {
+  border-left: 1px solid var(--line);
+}
+.theme-toggle .swatch {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
 }

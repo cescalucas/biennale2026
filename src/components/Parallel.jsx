@@ -16,7 +16,7 @@ export default function Parallel({ data, appData, onSelect }) {
       <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline">
         <div className="md:col-span-8">
           <div className="label-tag terra-text">05 · MUSEUS & INSTITUIÇÕES</div>
-          <h2 className="font-black text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.88] uppercase">
+          <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95]">
             Em paralelo
             <br />
             <em>à Bienal</em>
@@ -38,18 +38,18 @@ export default function Parallel({ data, appData, onSelect }) {
 
       {Object.entries(byOrg).map(([org, items], orgIdx) => (
         <section key={org} className="pt-12">
-          <div className="pt-8 mb-2" style={{ borderTop: '2px solid var(--ink)' }}>
-            <div className="label-tag terra-text">№ {String(orgIdx + 1).padStart(2, '0')} · Instituição</div>
-            <div className="font-black text-4xl md:text-5xl tracking-tightest ink-text mt-2 leading-[0.95] uppercase">{org}</div>
-            <div className="text-[12px] muted-text mt-2">{items.length} mostra(s) durante a Bienal</div>
+          <div className="pt-10 mb-4" style={{ borderTop: '1px solid var(--ink-soft)' }}>
+            <div className="label-tag" style={{ color: 'var(--terra)' }}>№ {String(orgIdx + 1).padStart(2, '0')} · Instituição</div>
+            <div className="font-serif italic text-5xl md:text-6xl tracking-tightest ink-text mt-4 leading-[0.95]">{org}</div>
+            <div className="text-[13px] muted-text mt-3">{items.length} mostra(s) durante a Bienal</div>
           </div>
           {items.map((it, i) => {
             const bios = biosFor(appData, it.id);
             return (
-              <article key={it.id} className="mt-8 pt-10 grid md:grid-cols-12 gap-8 md:gap-10 fade-in" style={{ borderTop: '1px solid var(--line)' }}>
+              <article key={it.id} className="mt-10 pt-12 grid md:grid-cols-12 gap-10 md:gap-12 fade-in" style={{ borderTop: '1px solid var(--line)' }}>
                 <div className="md:col-span-4">
-                  <div className="font-black text-3xl tnum tracking-tight" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
-                  <h4 className="font-black text-2xl md:text-3xl ink-text mt-3 leading-[0.95] uppercase tracking-tightest">{it.name}</h4>
+                  <div className="font-serif italic text-3xl tnum" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
+                  <h4 className="font-serif italic text-3xl md:text-4xl ink-text mt-4 leading-[1] tracking-tightest">{it.name}</h4>
                   <dl className="mt-5 hairline pt-4 space-y-3 text-[13px]">
                     {it.curator && (
                       <div>
@@ -93,9 +93,9 @@ export default function Parallel({ data, appData, onSelect }) {
                         <div key={b.key} className={idx > 0 ? 'pt-9' : ''} style={{ borderTop: idx > 0 ? '1px solid var(--line)' : 'none' }}>
                           <div className="grid grid-cols-12 gap-4">
                             <div className="col-span-12 md:col-span-3">
-                              <div className="label-tag muted-text">{bios.length > 1 ? `Artista ${idx + 1} / ${bios.length}` : 'O artista'}</div>
-                              <div className="font-black text-2xl md:text-3xl ink-text mt-2 leading-[0.95] uppercase tracking-tightest">{b.name}</div>
-                              <div className="label-tag muted-text mt-2">{b.years}</div>
+                              <div className="label-tag">{bios.length > 1 ? `Artista ${idx + 1} / ${bios.length}` : 'O artista'}</div>
+                              <div className="font-serif italic text-3xl ink-text mt-3 leading-[1.05]">{b.name}</div>
+                              <div className="label-tag mt-3">{b.years}</div>
                             </div>
                             <div className="col-span-12 md:col-span-9">
                               <p className="text-[14.5px] ink-text leading-relaxed">{b.bio}</p>

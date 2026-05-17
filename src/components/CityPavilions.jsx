@@ -13,7 +13,7 @@ export default function CityPavilions({ data, onSelect }) {
       <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline">
         <div className="md:col-span-8">
           <div className="label-tag terra-text">03 · PAVILHÕES NA CIDADE</div>
-          <h2 className="font-black text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.88] uppercase">
+          <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95]">
             Sem teto fixo
             <br />
             <em>nos Giardini</em>
@@ -46,13 +46,13 @@ export default function CityPavilions({ data, onSelect }) {
 
       <section className="pt-10 grid md:grid-cols-2 gap-4">
         {filtered.map((c, i) => (
-          <article key={c.id} className="bg-paper p-6 card cursor-pointer flex flex-col" onClick={() => onSelect(c.id)} style={{ border: '1px solid var(--ink)' }}>
+          <article key={c.id} className="card cursor-pointer flex flex-col p-7" onClick={() => onSelect(c.id)} style={{ border: '1px solid var(--line)' }}>
             <div className="flex items-baseline justify-between">
-              <div className="font-bold text-[11px] tracking-widest tnum">{String(i + 1).padStart(3, '0')}</div>
-              {c.highlight && <div className="bg-terra text-paper px-2 py-0.5 text-[10px] font-bold tracking-widest" style={{ color: 'var(--paper)' }}>ESTREIA</div>}
+              <div className="label-tag tnum">{String(i + 1).padStart(3, '0')}</div>
+              {c.highlight && <div className="label-tag" style={{ color: 'var(--terra)' }}>★ Estreia</div>}
             </div>
-            <h3 className="font-black text-2xl ink-text mt-3 leading-[0.95] uppercase tracking-tightest">{c.name}</h3>
-            {c.title && <div className="italic text-sm muted-text mt-1 font-medium">"{c.title}"</div>}
+            <h3 className="font-serif italic text-3xl ink-text mt-4 leading-[1.05]">{c.name}</h3>
+            {c.title && <div className="text-[14px] muted-text mt-2 leading-snug">"{c.title}"</div>}
             <div className="mt-4 text-[13px] ink-text leading-relaxed">
               {c.artists && (
                 <div>

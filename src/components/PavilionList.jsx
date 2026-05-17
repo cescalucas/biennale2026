@@ -21,10 +21,10 @@ export default function PavilionList({ area, data, mainExhibition, appData, onSe
 
   return (
     <div>
-      <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline-strong">
+      <section className="pt-16 pb-12 grid md:grid-cols-12 gap-6 hairline">
         <div className="md:col-span-8">
           <div className="label-tag terra-text">{meta.kicker}</div>
-          <h2 className="font-black text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.88] uppercase whitespace-pre-line">{meta.title}</h2>
+          <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95] whitespace-pre-line">{meta.title}</h2>
           <p className="mt-5 max-w-xl text-[14.5px] muted-text leading-relaxed">{meta.sub}</p>
         </div>
         <div className="md:col-span-4 md:text-right text-[13px]">
@@ -38,12 +38,12 @@ export default function PavilionList({ area, data, mainExhibition, appData, onSe
       </section>
 
       {showMain && (
-        <section className="pt-12 mt-2" style={{ borderTop: '1px solid var(--ink)' }}>
-          <div className="grid md:grid-cols-12 gap-8 pt-10">
+        <section className="pt-16 mt-4" style={{ borderTop: '1px solid var(--line)' }}>
+          <div className="grid md:grid-cols-12 gap-10 pt-12">
             <div className="md:col-span-4">
-              <div className="bg-terra text-paper inline-block px-2 py-1 text-[11px] font-bold tracking-widest" style={{ color: 'var(--paper)' }}>MOSTRA PRINCIPAL</div>
-              <h3 className="font-black text-4xl md:text-5xl tracking-tightest mt-4 ink-text leading-[0.92] uppercase">In Minor Keys</h3>
-              <div className="text-base muted-text mt-2 italic">os 110 participantes convidados</div>
+              <div className="label-tag" style={{ color: 'var(--terra)' }}>★ Mostra principal</div>
+              <h3 className="font-serif italic text-5xl md:text-6xl tracking-tightest mt-4 ink-text leading-[0.95]">In Minor Keys</h3>
+              <div className="text-base muted-text mt-3">os 110 participantes convidados</div>
               <p className="text-[13.5px] muted-text mt-5 leading-relaxed">
                 Selecionados por <span className="font-medium ink-text">Koyo Kouoh</span> e sua equipe (Beckhurst Feijoo · Pereira · Salti), os
                 110 artistas, duplas, coletivos e organizações lideradas por artistas atravessam o Padiglione Centrale (Giardini) e
@@ -71,14 +71,14 @@ export default function PavilionList({ area, data, mainExhibition, appData, onSe
         {data.map((p, i) => {
           const bios = biosFor(appData, p.id);
           return (
-            <article key={p.id} className="py-12 grid md:grid-cols-12 gap-8 md:gap-10 fade-in" style={{ borderTop: '1px solid var(--ink)' }}>
+            <article key={p.id} className="py-14 grid md:grid-cols-12 gap-10 md:gap-12 fade-in" style={{ borderTop: '1px solid var(--line)' }}>
               <div className="md:col-span-4">
                 <div className="flex items-baseline justify-between">
-                  <div className="font-black text-3xl tnum tracking-tight" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
-                  {p.highlight && <div className="bg-terra text-paper px-2 py-1 text-[10px] font-bold tracking-widest" style={{ color: 'var(--paper)' }}>EM DESTAQUE</div>}
+                  <div className="font-serif italic text-3xl tnum" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
+                  {p.highlight && <div className="label-tag" style={{ color: 'var(--terra)' }}>★ Em destaque</div>}
                 </div>
-                <h3 className="font-black text-3xl md:text-4xl tracking-tightest mt-4 ink-text leading-[0.95] uppercase">{p.name}</h3>
-                {p.title && <div className="italic text-lg muted-text mt-2 leading-snug font-medium">"{p.title}"</div>}
+                <h3 className="font-serif italic text-4xl md:text-5xl tracking-tightest mt-5 ink-text leading-[0.95]">{p.name}</h3>
+                {p.title && <div className="text-lg muted-text mt-3 leading-snug">"{p.title}"</div>}
                 <dl className="mt-6 hairline pt-5 space-y-3 text-[13px]">
                   {p.artists && (
                     <div>
@@ -118,9 +118,9 @@ export default function PavilionList({ area, data, mainExhibition, appData, onSe
                       <div key={b.key} className={idx > 0 ? 'pt-9' : ''} style={{ borderTop: idx > 0 ? '1px solid var(--line)' : 'none' }}>
                         <div className="grid grid-cols-12 gap-4">
                           <div className="col-span-12 md:col-span-3">
-                            <div className="label-tag muted-text">{bios.length > 1 ? `Artista ${idx + 1} / ${bios.length}` : 'O artista'}</div>
-                            <div className="font-black text-2xl md:text-3xl ink-text mt-2 leading-[0.95] uppercase tracking-tightest">{b.name}</div>
-                            <div className="label-tag muted-text mt-2">{b.years}</div>
+                            <div className="label-tag">{bios.length > 1 ? `Artista ${idx + 1} / ${bios.length}` : 'O artista'}</div>
+                            <div className="font-serif italic text-3xl ink-text mt-3 leading-[1.05]">{b.name}</div>
+                            <div className="label-tag mt-3">{b.years}</div>
                           </div>
                           <div className="col-span-12 md:col-span-9">
                             <p className="text-[14.5px] ink-text leading-relaxed">{b.bio}</p>

@@ -9,7 +9,7 @@ export default function Itineraries({ data, setView }) {
       <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline">
         <div className="md:col-span-8">
           <div className="label-tag terra-text">08 · ROTEIROS</div>
-          <h2 className="font-black text-5xl md:text-7xl tracking-tightest mt-4 ink-text leading-[0.88] uppercase">
+          <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95]">
             Como atravessar
             <br />
             <em>a Bienal</em>
@@ -40,7 +40,7 @@ export default function Itineraries({ data, setView }) {
 
       <section className="mt-10 grid md:grid-cols-12 gap-10">
         <div className="md:col-span-4">
-          <div className="font-black text-3xl ink-text leading-[0.95] uppercase tracking-tightest">{route.title}</div>
+          <div className="font-serif italic text-4xl ink-text leading-[1] tracking-tightest">{route.title}</div>
           <div className="label-tag muted-text mt-3">{route.duration}</div>
           <div className="text-[14px] muted-text mt-5 leading-relaxed">{route.blurb}</div>
           <button onClick={() => setView('map')} className="mt-6 pillbtn px-4 py-2 text-[12px] uppercase tracking-widest" style={{ border: '1px solid var(--ink)' }}>
@@ -52,11 +52,11 @@ export default function Itineraries({ data, setView }) {
             {route.steps.map((s, i) => (
               <li key={i} className="grid grid-cols-12 gap-4 items-start">
                 <div className="col-span-3 md:col-span-2 text-right">
-                  <div className="font-black text-3xl leading-none tnum" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
-                  <div className="label-tag muted-text mt-2">{s.time}</div>
+                  <div className="font-serif italic text-3xl leading-none tnum" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
+                  <div className="label-tag mt-3">{s.time}</div>
                 </div>
-                <div className="col-span-9 md:col-span-10 pb-6" style={{ borderBottom: '1px solid var(--line)' }}>
-                  <div className="font-black text-xl ink-text leading-tight uppercase tracking-tight">{s.stop}</div>
+                <div className="col-span-9 md:col-span-10 pb-7" style={{ borderBottom: '1px solid var(--line)' }}>
+                  <div className="font-serif italic text-2xl ink-text leading-tight">{s.stop}</div>
                   <div className="text-[13.5px] muted-text mt-2 leading-relaxed">{s.detail}</div>
                 </div>
               </li>
