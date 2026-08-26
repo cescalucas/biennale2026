@@ -1,6 +1,27 @@
 import { useMemo, useState } from 'react';
+import { PageHead, ControlBar, Eyebrow, Tick } from './ui.jsx';
 
-export default function Artists({ appData, onSelectVenue }) {
+const AREA_PREFIX = {
+  main: 'Mostra principal',
+  giardini: 'Giardini',
+  arsenale: 'Arsenale',
+  city: 'Pavilhão na cidade',
+  collateral: 'Colateral',
+  parallel: 'Museu',
+};
+
+const AREA_GROUP = {
+  main: 'Mostra principal · In Minor Keys',
+  giardini: 'Giardini · pavilhões nacionais',
+  arsenale: 'Arsenale · pavilhões nacionais',
+  city: 'Pavilhões nacionais na cidade',
+  collateral: 'Eventos colaterais',
+  parallel: 'Museus & instituições',
+};
+
+const AREA_ORDER = { main: 0, giardini: 1, arsenale: 2, city: 3, collateral: 4, parallel: 5 };
+
+export default function Artists({ appData, onSelectVenue, anchor }) {
   const [groupBy, setGroupBy] = useState('alpha');
   const [q, setQ] = useState('');
 
@@ -30,9 +51,9 @@ export default function Artists({ appData, onSelectVenue }) {
         key: 'main-' + i,
         name: p.name,
         years: p.origin,
-        bio: 'Participante da mostra principal "In Minor Keys" (Padiglione Centrale + Corderie do Arsenale), com curadoria de Koyo Kouoh e equipe.',
+        bio: 'Convidado da mostra principal “In Minor Keys”, entre o Padiglione Centrale dos Giardini e as Corderie do Arsenale.',
         venueId: 'centrale',
-        venueName: 'Padiglione Centrale · Mostra Principal',
+        venueName: 'Padiglione Centrale',
         venueArea: 'main',
         venueTitle: 'In Minor Keys',
         zone: 'G',
@@ -42,112 +63,93 @@ export default function Artists({ appData, onSelectVenue }) {
     return list;
   }, [appData]);
 
-  const filtered = useMemo(() => {
-    const s = q.trim().toLowerCase();
-    if (!s) return flat;
-    return flat.filter((x) => x.name.toLowerCase().includes(s) || x.bio.toLowerCase().includes(s) || x.venueName.toLowerCase().includes(s));
-  }, [q, flat]);
-
-  const sorted = useMemo(() => {
-    return [...filtered].sort((a, b) => {
-      if (groupBy === 'alpha') return a.name.localeCompare(b.name, 'pt-BR');
-      const areaOrder = { main: 0, giardini: 1, arsenale: 2, city: 3, collateral: 4, parallel: 5 };
-      const d = (areaOrder[a.venueArea] ?? 9) - (areaOrder[b.venueArea] ?? 9);
-      if (d !== 0) return d;
-      return a.venueName.localeCompare(b.venueName, 'pt-BR');
-    });
-  }, [filtered, groupBy]);
-
   const groups = useMemo(() => {
-    const g = {};
-    if (groupBy === 'alpha') {
-      sorted.forEach((a) => {
-        const letter = a.name.replace(/[^a-zA-ZÀ-Ÿ]/g, '')[0]?.toUpperCase() || '#';
-        (g[letter] ||= []).push(a);
-      });
-    } else {
-      const labels = {
-        main: 'Mostra Principal · In Minor Keys',
-        giardini: 'Giardini · Pavilhões nacionais',
-        arsenale: 'Arsenale · Pavilhões nacionais',
-        city: 'Pavilhões nacionais na cidade',
-        collateral: 'Eventos Colaterais',
-        parallel: 'Museus & Instituições',
-      };
-      sorted.forEach((a) => {
-        const lbl = labels[a.venueArea] || a.venueArea;
-        (g[lbl] ||= []).push(a);
-      });
-    }
-    return g;
-  }, [sorted, groupBy]);
+    const s = q.trim().toLowerCase();
+    const filtered = s
+      ? flat.filter((x) => (x.name + ' ' + x.bio + ' ' + x.venueName).toLowerCase().includes(s))
+      : flat;
+
+    const sorted = [...filtered].sort((a, b) => {
+      if (groupBy === 'alpha') return a.name.localeCompare(b.name, 'pt-BR');
+      const d = (AREA_ORDER[a.venueArea] ?? 9) - (AREA_ORDER[b.venueArea] ?? 9);
+      return d !== 0 ? d : a.venueName.localeCompare(b.venueName, 'pt-BR');
+    });
+
+    const g = new Map();
+    sorted.forEach((a) => {
+      const label =
+        groupBy === 'alpha'
+          ? a.name.replace(/[^a-zA-ZÀ-Ÿ]/g, '')[0]?.toUpperCase() || '#'
+          : AREA_GROUP[a.venueArea] || a.venueArea;
+      if (!g.has(label)) g.set(label, []);
+      g.get(label).push(a);
+    });
+    return { entries: [...g.entries()], count: sorted.length };
+  }, [flat, q, groupBy]);
 
   return (
-    <div>
-      <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline">
-        <div className="md:col-span-8">
-          <div className="label-tag terra-text">06 · ÍNDICE DE ARTISTAS</div>
-          <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95]">
-            Quem está
-            <br />
-            <em>em Veneza</em>
-          </h2>
-          <p className="mt-5 max-w-xl text-[14.5px] muted-text leading-relaxed">
-            {flat.length} artistas catalogados — atravessando a mostra principal "In Minor Keys", os pavilhões nacionais (Giardini,
-            Arsenale e cidade), os eventos colaterais e as exposições em museus. Use o filtro para alternar entre ordem alfabética
-            e agrupamento por local.
-          </p>
-        </div>
-        <div className="md:col-span-4 md:text-right text-[13px]">
-          <div className="label-tag muted-text">No total</div>
-          <div className="ink-text mt-1">{flat.length} artistas</div>
-          <div className="muted-text mt-1">{flat.filter((x) => x.hasBio).length} com biografia detalhada</div>
-          <div className="muted-text mt-1">{flat.filter((x) => !x.hasBio).length} participantes da mostra principal</div>
-        </div>
-      </section>
+    <>
+      <PageHead
+        access="Índice geral · mostra principal, pavilhões, colaterais e museus"
+        title="Quem está"
+        italic="em Veneza"
+        lede={`${flat.length} artistas catalogados. Clique no local abaixo de cada nome para abrir a ficha da exposição em que ele aparece.`}
+        facts={[
+          { k: 'No índice', v: `${flat.length}` },
+          { k: 'Com biografia', v: `${flat.filter((x) => x.hasBio).length}` },
+          { k: 'Mostra principal', v: `${flat.filter((x) => !x.hasBio).length}` },
+        ]}
+      />
 
-      <section className="py-5 flex flex-wrap items-center justify-between gap-4 hairline">
-        <div className="flex gap-2">
-          <button onClick={() => setGroupBy('alpha')} className={'pillbtn px-3 py-1.5 text-[11.5px] uppercase tracking-widest border border-ink ' + (groupBy === 'alpha' ? 'active' : '')}>
-            A → Z
-          </button>
-          <button onClick={() => setGroupBy('location')} className={'pillbtn px-3 py-1.5 text-[11.5px] uppercase tracking-widest border border-ink ' + (groupBy === 'location' ? 'active' : '')}>
-            Por local
-          </button>
-        </div>
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Buscar artista ou local…"
-          className="bg-paper border border-line px-4 py-2 text-[13px] focus:outline-none focus:border-ink w-full md:w-80"
-        />
-      </section>
-
-      {Object.entries(groups).map(([groupName, arr]) => (
-        <section key={groupName} className="pt-10">
-          <div className="pt-8 mb-8 flex items-end justify-between" style={{ borderTop: '1px solid var(--ink-soft)' }}>
-            <div className="font-serif italic text-6xl tracking-tightest leading-[0.95]" style={{ color: 'var(--terra)' }}>{groupName}</div>
-            <div className="label-tag">{arr.length} artista(s)</div>
+      <ControlBar>
+        <div className="flex flex-wrap items-center gap-3">
+          <label htmlFor="busca-artista" className="sr-only">
+            Buscar artista ou local
+          </label>
+          <input
+            id="busca-artista"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Buscar artista ou local…"
+            className="field w-full sm:w-80"
+          />
+          <div className="seg" role="group" aria-label="Agrupamento">
+            <button type="button" aria-pressed={groupBy === 'alpha'} onClick={() => setGroupBy('alpha')}>
+              A → Z
+            </button>
+            <button type="button" aria-pressed={groupBy === 'location'} onClick={() => setGroupBy('location')}>
+              Por local
+            </button>
           </div>
-          <div className="space-y-10">
+        </div>
+        <Eyebrow>
+          <span aria-live="polite">{groups.count} artistas</span>
+        </Eyebrow>
+      </ControlBar>
+
+      {groups.entries.map(([label, arr]) => (
+        <section key={label} className="mt-6">
+          <div className="pt-8 pb-6 flex items-baseline justify-between gap-6">
+            <h2 className={`u-display u-wonk t-key ${groupBy === 'alpha' ? 'text-[44px]' : 'text-[clamp(1.4rem,2.6vw,2rem)]'}`}>
+              {label}
+            </h2>
+            <Eyebrow>{arr.length}</Eyebrow>
+          </div>
+          <div>
             {arr.map((a) => (
-              <article key={a.key + a.venueId} className="grid md:grid-cols-12 gap-6 pb-9" style={{ borderBottom: '1px solid var(--line)' }}>
+              <article key={a.key + a.venueId} className="grid md:grid-cols-12 gap-x-8 gap-y-2 py-6 rule-b">
                 <div className="md:col-span-4">
-                  <div className="font-serif italic text-3xl ink-text leading-[1.05] tracking-tightest">{a.name}</div>
-                  <div className="label-tag muted-text mt-1.5">{a.years}</div>
-                  <button onClick={() => onSelectVenue(a.venueId)} className="mt-3 text-[12px] terra-text hover:underline text-left leading-snug">
-                    {a.venueArea === 'main' && 'Mostra principal · '}
-                    {a.venueArea === 'giardini' && 'Giardini · '}
-                    {a.venueArea === 'arsenale' && 'Arsenale · '}
-                    {a.venueArea === 'city' && 'Pavilhão na cidade · '}
-                    {a.venueArea === 'collateral' && 'Colateral · '}
-                    {a.venueArea === 'parallel' && 'Museu · '}
-                    {a.venueArea === 'parallel' ? a.venueOrg : a.venueName}
-                    {a.venueTitle && a.venueArea !== 'parallel' && <span className="italic"> · "{a.venueTitle}"</span>}
+                  <h3 className="u-display text-[22px] t-1 leading-tight">{a.name}</h3>
+                  <div className="u-mono text-[11px] t-3 mt-1">{a.years}</div>
+                  <button type="button" onClick={() => onSelectVenue(a.venueId)} className="btn-inline mt-2 block leading-snug">
+                    {AREA_PREFIX[a.venueArea]} · {a.venueArea === 'parallel' ? a.venueOrg : a.venueName}
                   </button>
+                  <div className="mt-1.5">
+                    <Tick anchor={anchor} zone={a.zone} />
+                  </div>
                 </div>
                 <div className="md:col-span-8">
-                  <p className="text-[14.5px] ink-text leading-relaxed">{a.bio}</p>
+                  <p className="u-prose text-[15.5px]">{a.bio}</p>
                 </div>
               </article>
             ))}
@@ -155,7 +157,7 @@ export default function Artists({ appData, onSelectVenue }) {
         </section>
       ))}
 
-      {sorted.length === 0 && <div className="py-16 text-center italic text-xl muted-text font-medium">Nenhum artista encontrado.</div>}
-    </div>
+      {groups.count === 0 && <p className="u-prose italic text-center py-20">Nenhum artista corresponde a “{q}”.</p>}
+    </>
   );
 }

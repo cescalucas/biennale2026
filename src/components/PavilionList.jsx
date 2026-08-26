@@ -1,144 +1,118 @@
+import { useMemo, useState } from 'react';
 import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
+import { minutesFrom } from '../lib/travelTimes.js';
+import { PageHead, ControlBar, Eyebrow, Tick, VenueFacts, ArtistBios, VenueActions } from './ui.jsx';
 
-export default function PavilionList({ area, data, mainExhibition, appData, onSelect }) {
-  const meta =
-    area === 'giardini'
-      ? {
-          kicker: '01 · GIARDINI',
-          title: 'Os pavilhões\nnacionais',
-          sub: '29 pavilhões permanentes nos jardins de Castello, datados desde 1907. A mostra principal "In Minor Keys" — com 110 participantes — ocupa o Padiglione Centrale.',
-          stops: 'Giardini · Linha 1 / 2 / 4.1 / 5.1',
-        }
-      : {
-          kicker: '02 · ARSENALE',
-          title: 'Tese delle Vergini\n& Corderie',
-          sub: 'O antigo estaleiro naval da República Sereníssima abriga países sem pavilhão fixo e parte da mostra internacional.',
-          stops: 'Arsenale · Linha 1 / 4.1',
-        };
+const META = {
+  giardini: {
+    access: 'Vaporetto 1 · 2 · 4.1 · 5.1 — parada Giardini',
+    title: 'Os pavilhões',
+    italic: 'nacionais',
+    lede: 'Vinte e nove pavilhões permanentes nos jardins de Castello, o mais antigo de 1907. No meio deles, o Padiglione Centrale abriga a abertura de “In Minor Keys”.',
+  },
+  arsenale: {
+    access: 'Vaporetto 1 · 4.1 — parada Arsenale',
+    title: 'Tese delle Vergini',
+    italic: '& Corderie',
+    lede: 'O estaleiro naval da República Sereníssima, fechado ao público por séculos, hoje abriga os países sem pavilhão fixo e a continuação da mostra internacional.',
+  },
+};
+
+export default function PavilionList({ area, data, mainExhibition, appData, onSelect, anchor }) {
+  const [sort, setSort] = useState('catalog');
+  const meta = META[area];
 
   const artistCount = data.reduce((sum, p) => sum + (appData.venueArtists[p.id]?.length || 0), 0);
   const showMain = area === 'giardini' && mainExhibition?.length;
 
+  const ordered = useMemo(() => {
+    if (sort !== 'near') return data;
+    return [...data].sort((a, b) => (minutesFrom(anchor, a.zone) ?? 999) - (minutesFrom(anchor, b.zone) ?? 999));
+  }, [data, sort, anchor]);
+
   return (
-    <div>
-      <section className="pt-16 pb-12 grid md:grid-cols-12 gap-6 hairline">
-        <div className="md:col-span-8">
-          <div className="label-tag terra-text">{meta.kicker}</div>
-          <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95] whitespace-pre-line">{meta.title}</h2>
-          <p className="mt-5 max-w-xl text-[14.5px] muted-text leading-relaxed">{meta.sub}</p>
-        </div>
-        <div className="md:col-span-4 md:text-right text-[13px]">
-          <div className="label-tag muted-text">Pavilhões</div>
-          <div className="ink-text mt-1">{data.length} catalogados</div>
-          <div className="label-tag muted-text mt-4">Artistas</div>
-          <div className="ink-text mt-1">{artistCount} com biografia detalhada</div>
-          <div className="label-tag muted-text mt-4">Como chegar</div>
-          <div className="ink-text mt-1">{meta.stops}</div>
-        </div>
-      </section>
+    <>
+      <PageHead
+        access={meta.access}
+        title={meta.title}
+        italic={meta.italic}
+        lede={meta.lede}
+        facts={[
+          { k: 'Pavilhões', v: `${data.length}` },
+          { k: 'Artistas com bio', v: `${artistCount}` },
+          { k: 'Daqui', v: <Tick anchor={anchor} zone={area === 'giardini' ? 'G' : 'A'} /> },
+        ]}
+      />
 
       {showMain && (
-        <section className="pt-16 mt-4" style={{ borderTop: '1px solid var(--line)' }}>
-          <div className="grid md:grid-cols-12 gap-10 pt-12">
-            <div className="md:col-span-4">
-              <div className="label-tag" style={{ color: 'var(--terra)' }}>★ Mostra principal</div>
-              <h3 className="font-serif italic text-5xl md:text-6xl tracking-tightest mt-4 ink-text leading-[0.95]">In Minor Keys</h3>
-              <div className="text-base muted-text mt-3">os 110 participantes convidados</div>
-              <p className="text-[13.5px] muted-text mt-5 leading-relaxed">
-                Selecionados por <span className="font-medium ink-text">Koyo Kouoh</span> e sua equipe (Beckhurst Feijoo · Pereira · Salti), os
-                110 artistas, duplas, coletivos e organizações lideradas por artistas atravessam o Padiglione Centrale (Giardini) e
-                as Corderie (Arsenale). Listamos {mainExhibition.length} dos confirmados.
-              </p>
-              <button onClick={() => onSelect('centrale')} className="mt-5 text-[12px] uppercase tracking-widest font-medium hover:underline" style={{ color: 'var(--terra)' }}>
-                Sobre o Padiglione Centrale →
-              </button>
-            </div>
-            <div className="md:col-span-8">
-              <ul className="columns-1 sm:columns-2 lg:columns-3 gap-x-6 text-[13px] space-y-2">
-                {mainExhibition.map((p, i) => (
-                  <li key={i} className="break-inside-avoid">
-                    <div className="ink-text">{p.name}</div>
-                    <div className="muted-text text-[11.5px] italic">{p.origin}</div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <section className="pt-14 grid md:grid-cols-12 gap-x-10 gap-y-8">
+          <div className="md:col-span-4">
+            <Eyebrow tone="key">Mostra principal</Eyebrow>
+            <h2 className="u-display u-wonk italic text-[clamp(2.2rem,4.5vw,3.4rem)] t-1 mt-3">In Minor Keys</h2>
+            <p className="u-prose text-[15px] mt-5">
+              Os 110 artistas, duplas, coletivos e organizações escolhidos por Koyo Kouoh e sua equipe atravessam o
+              Padiglione Centrale, aqui nos Giardini, e as Corderie do Arsenale. Estão listados{' '}
+              <em>{mainExhibition.length} confirmados</em>.
+            </p>
+            <button type="button" onClick={() => onSelect('centrale')} className="btn-inline mt-5">
+              Sobre o Padiglione Centrale <span aria-hidden="true">→</span>
+            </button>
           </div>
+          <ul className="md:col-span-8 columns-1 sm:columns-2 lg:columns-3 gap-x-8 rule-strong-t pt-6">
+            {mainExhibition.map((p, i) => (
+              <li key={i} className="break-inside-avoid mb-3">
+                <div className="text-[15px] t-1 leading-snug">{p.name}</div>
+                <div className="u-mono text-[10.5px] t-3">{p.origin}</div>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 
-      <section className="pt-10">
-        {data.map((p, i) => {
+      <section className="mt-16">
+        <ControlBar>
+          <Eyebrow>
+            {data.length} pavilhões · {area === 'giardini' ? 'Giardini' : 'Arsenale'}
+          </Eyebrow>
+          <div className="seg" role="group" aria-label="Ordenação">
+            <button type="button" aria-pressed={sort === 'catalog'} onClick={() => setSort('catalog')}>
+              Catálogo
+            </button>
+            <button type="button" aria-pressed={sort === 'near'} onClick={() => setSort('near')}>
+              Mais perto
+            </button>
+          </div>
+        </ControlBar>
+
+        {ordered.map((p) => {
           const bios = biosFor(appData, p.id);
           return (
-            <article key={p.id} className="py-14 grid md:grid-cols-12 gap-10 md:gap-12 fade-in" style={{ borderTop: '1px solid var(--line)' }}>
+            <article key={p.id} className="py-12 grid md:grid-cols-12 gap-x-10 gap-y-8 rule-t">
               <div className="md:col-span-4">
-                <div className="flex items-baseline justify-between">
-                  <div className="font-serif italic text-3xl tnum" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
-                  {p.highlight && <div className="label-tag" style={{ color: 'var(--terra)' }}>★ Em destaque</div>}
+                <div className="flex items-center justify-between gap-4">
+                  <Tick anchor={anchor} zone={p.zone} />
+                  {p.highlight && <Eyebrow tone="key">Em destaque</Eyebrow>}
                 </div>
-                <h3 className="font-serif italic text-4xl md:text-5xl tracking-tightest mt-5 ink-text leading-[0.95]">{p.name}</h3>
-                {p.title && <div className="text-lg muted-text mt-3 leading-snug">"{p.title}"</div>}
-                <dl className="mt-6 hairline pt-5 space-y-3 text-[13px]">
-                  {p.artists && (
-                    <div>
-                      <dt className="label-tag muted-text">Artista(s)</dt>
-                      <dd className="ink-text mt-0.5">{p.artists}</dd>
-                    </div>
-                  )}
-                  {p.curator && (
-                    <div>
-                      <dt className="label-tag muted-text">Curadoria</dt>
-                      <dd className="ink-text mt-0.5">{p.curator}</dd>
-                    </div>
-                  )}
-                  <div>
-                    <dt className="label-tag muted-text">Localização</dt>
-                    <dd className="ink-text mt-0.5 italic">{appData.zoneNames[p.zone]}</dd>
-                  </div>
-                </dl>
+                <h3 className="u-display u-wonk text-[clamp(2rem,3.6vw,2.8rem)] t-1 mt-4">{p.name}</h3>
+                {p.title && <div className="u-display italic text-[19px] t-2 mt-2">“{p.title}”</div>}
+                <VenueFacts venue={p} zoneNames={appData.zoneNames} />
                 {p.note && (
-                  <p className="mt-6 italic text-[13px] muted-text leading-relaxed border-l pl-3" style={{ borderColor: 'var(--terra)' }}>
+                  <p className="u-prose text-[14px] italic mt-6 pl-4" style={{ borderLeft: '2px solid var(--verde-deep)' }}>
                     {p.note}
                   </p>
                 )}
-                <div className="mt-6 flex flex-col gap-2">
-                  <button onClick={() => onSelect(p.id)} className="text-[12px] uppercase tracking-widest terra-text hover:underline text-left">
-                    Ver detalhes →
-                  </button>
-                  <a href={mapsUrlFor(p)} target="_blank" rel="noreferrer" className="text-[12px] uppercase tracking-widest muted-text hover:text-ink hover:underline text-left">
-                    ↗ Google Maps
-                  </a>
-                </div>
+                <VenueActions venue={p} mapsUrl={mapsUrlFor(p)} onDetail={onSelect} />
               </div>
               <div className="md:col-span-8">
-                {bios.length > 0 ? (
-                  <div className="space-y-9">
-                    {bios.map((b, idx) => (
-                      <div key={b.key} className={idx > 0 ? 'pt-9' : ''} style={{ borderTop: idx > 0 ? '1px solid var(--line)' : 'none' }}>
-                        <div className="grid grid-cols-12 gap-4">
-                          <div className="col-span-12 md:col-span-3">
-                            <div className="label-tag">{bios.length > 1 ? `Artista ${idx + 1} / ${bios.length}` : 'O artista'}</div>
-                            <div className="font-serif italic text-3xl ink-text mt-3 leading-[1.05]">{b.name}</div>
-                            <div className="label-tag mt-3">{b.years}</div>
-                          </div>
-                          <div className="col-span-12 md:col-span-9">
-                            <p className="text-[14.5px] ink-text leading-relaxed">{b.bio}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-[14px] muted-text italic leading-relaxed p-6" style={{ border: '1px solid var(--line)' }}>
-                    Esta exposição reúne um coletivo amplo de artistas. Veja a lista completa no site oficial da Bienal.
-                  </div>
-                )}
+                <ArtistBios
+                  bios={bios}
+                  emptyNote="Esta apresentação reúne um coletivo amplo. A lista completa de participantes está no site oficial da Bienal."
+                />
               </div>
             </article>
           );
         })}
       </section>
-    </div>
+    </>
   );
 }

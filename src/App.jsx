@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { loadData } from './lib/dataStore.js';
 import { Header, Footer } from './components/Layout.jsx';
 import Home from './components/Home.jsx';
@@ -12,28 +12,50 @@ import Itineraries from './components/Itineraries.jsx';
 import Drawer from './components/Drawer.jsx';
 
 const THEME_KEY = 'biennale-theme';
+const ANCHOR_KEY = 'biennale-anchor';
+const VIEWS = ['home', 'giardini', 'arsenale', 'city', 'collateral', 'parallel', 'artists', 'map', 'itineraries'];
 
-function readInitialTheme() {
-  if (typeof window === 'undefined') return 'dark';
+/* O endereço reflete onde você está: #/giardini, #/map/brasil.
+   Assim o botão “voltar” funciona e qualquer local pode ser compartilhado. */
+function parseHash() {
+  const raw = (typeof window === 'undefined' ? '' : window.location.hash).replace(/^#\/?/, '');
+  const [view, venueId] = raw.split('/');
+  return { view: VIEWS.includes(view) ? view : 'home', venueId: venueId || null };
+}
+
+function readStored(key, fallback, allowed) {
+  if (typeof window === 'undefined') return fallback;
   try {
-    const stored = window.localStorage.getItem(THEME_KEY);
-    if (stored === 'light' || stored === 'dark') return stored;
-  } catch {}
-  return 'dark';
+    const v = window.localStorage.getItem(key);
+    return allowed.includes(v) ? v : fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 export default function App() {
   const [data, setData] = useState(null);
-  const [view, setView] = useState('home');
+  const [route, setRoute] = useState(parseHash);
   const [selectedId, setSelectedId] = useState(null);
   const [hoveredId, setHoveredId] = useState(null);
   const [mapFilter, setMapFilter] = useState('all');
   const [showVaporetto, setShowVaporetto] = useState(true);
-  const [drawerId, setDrawerId] = useState(null);
-  const [theme, setTheme] = useState(readInitialTheme);
+  const [theme, setTheme] = useState(() => readStored(THEME_KEY, 'notturno', ['notturno', 'pietra']));
+  // Ponto de partida do visitante. Alimenta todos os tempos de deslocamento.
+  const [anchor, setAnchor] = useState(() =>
+    readStored(ANCHOR_KEY, 'M', ['G', 'A', 'Z', 'M', 'S', 'C', 'L', 'T', 'P', 'O', 'R', 'J'])
+  );
+
+  const { view, venueId: drawerId } = route;
 
   useEffect(() => {
     loadData().then(setData);
+  }, []);
+
+  useEffect(() => {
+    const onHash = () => setRoute(parseHash());
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
   useEffect(() => {
@@ -44,43 +66,92 @@ export default function App() {
   }, [theme]);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      window.localStorage.setItem(ANCHOR_KEY, anchor);
+    } catch {}
+  }, [anchor]);
+
+  useEffect(() => {
+    if (!drawerId) window.scrollTo({ top: 0, behavior: 'auto' });
   }, [view]);
 
   useEffect(() => {
     document.body.style.overflow = drawerId ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [drawerId]);
 
+  const goTo = useCallback((v) => {
+    window.location.hash = `#/${v}`;
+  }, []);
+
+  const openDetail = useCallback((id) => {
+    const { view: v } = parseHash();
+    window.location.hash = `#/${v}/${id}`;
+  }, []);
+
+  const closeDetail = useCallback(() => {
+    const { view: v } = parseHash();
+    window.location.hash = `#/${v}`;
+  }, []);
+
+  const seeOnMap = useCallback((id) => {
+    setSelectedId(id);
+    window.location.hash = '#/map';
+  }, []);
+
   if (!data) {
-    return <div className="loading-screen">carregando…</div>;
+    return (
+      <div className="boot" role="status">
+        <div className="u-display text-3xl t-1">In Minor Keys</div>
+        <div className="boot-bar">
+          <span />
+        </div>
+        <div className="u-eyebrow">Carregando o guia</div>
+      </div>
+    );
   }
 
-  const goTo = (v) => setView(v);
-  const openDetail = (id) => setDrawerId(id);
-  const seeOnMap = (id) => {
-    setSelectedId(id);
-    setDrawerId(null);
-    goTo('map');
-  };
+  const shared = { anchor, appData: data, onSelect: openDetail };
 
   return (
-    <div className="min-h-screen relative" style={{ zIndex: 2 }}>
-      <Header view={view} setView={goTo} theme={theme} setTheme={setTheme} />
-      <main className="px-6 md:px-10 lg:px-16 max-w-[1480px] mx-auto pb-32 fade-in" key={view}>
-        {view === 'home' && <Home data={data} setView={goTo} />}
+    <>
+      {/* Move o foco sem tocar no hash — que aqui é a rota, não uma âncora. */}
+      <a
+        href="#conteudo"
+        className="skip-link"
+        onClick={(e) => {
+          e.preventDefault();
+          document.getElementById('conteudo')?.focus();
+        }}
+      >
+        Pular para o conteúdo
+      </a>
+      <Header
+        view={view}
+        setView={goTo}
+        theme={theme}
+        setTheme={setTheme}
+        anchor={anchor}
+        setAnchor={setAnchor}
+        zoneNames={data.zoneNames}
+      />
+      <main id="conteudo" className="px-5 md:px-10 lg:px-14 max-w-shell mx-auto pb-20 enter" key={view} tabIndex={-1}>
+        {view === 'home' && <Home data={data} setView={goTo} anchor={anchor} />}
         {view === 'giardini' && (
-          <PavilionList area="giardini" data={data.pavilionsGiardini} mainExhibition={data.mainExhibition} appData={data} onSelect={openDetail} />
+          <PavilionList area="giardini" data={data.pavilionsGiardini} mainExhibition={data.mainExhibition} {...shared} />
         )}
-        {view === 'arsenale' && (
-          <PavilionList area="arsenale" data={data.pavilionsArsenale} appData={data} onSelect={openDetail} />
-        )}
-        {view === 'city' && <CityPavilions data={data.pavilionsCity} onSelect={openDetail} />}
-        {view === 'collateral' && <Collateral data={data.collateral} appData={data} onSelect={openDetail} />}
-        {view === 'parallel' && <Parallel data={data.parallel} appData={data} onSelect={openDetail} />}
-        {view === 'artists' && <Artists appData={data} onSelectVenue={openDetail} />}
+        {view === 'arsenale' && <PavilionList area="arsenale" data={data.pavilionsArsenale} {...shared} />}
+        {view === 'city' && <CityPavilions data={data.pavilionsCity} {...shared} />}
+        {view === 'collateral' && <Collateral data={data.collateral} {...shared} />}
+        {view === 'parallel' && <Parallel data={data.parallel} {...shared} />}
+        {view === 'artists' && <Artists appData={data} anchor={anchor} onSelectVenue={openDetail} />}
         {view === 'map' && (
           <MapView
             appData={data}
+            anchor={anchor}
+            setAnchor={setAnchor}
             selectedId={selectedId}
             setSelectedId={setSelectedId}
             hoveredId={hoveredId}
@@ -94,8 +165,8 @@ export default function App() {
         )}
         {view === 'itineraries' && <Itineraries data={data.itineraries} setView={goTo} />}
       </main>
-      <Footer />
-      <Drawer venueId={drawerId} appData={data} onClose={() => setDrawerId(null)} onSeeOnMap={seeOnMap} />
-    </div>
+      <Footer setView={goTo} />
+      <Drawer venueId={drawerId} appData={data} anchor={anchor} onClose={closeDetail} onSeeOnMap={seeOnMap} />
+    </>
   );
 }

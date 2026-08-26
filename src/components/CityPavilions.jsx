@@ -1,78 +1,102 @@
 import { useMemo, useState } from 'react';
+import { minutesFrom } from '../lib/travelTimes.js';
+import { PageHead, ControlBar, Eyebrow, Tick } from './ui.jsx';
 
-export default function CityPavilions({ data, onSelect }) {
+export default function CityPavilions({ data, appData, onSelect, anchor }) {
   const [q, setQ] = useState('');
-  const filtered = useMemo(() => {
+  const [sort, setSort] = useState('az');
+
+  const list = useMemo(() => {
     const s = q.trim().toLowerCase();
-    if (!s) return data;
-    return data.filter((d) => (d.name + (d.artists || '') + (d.title || '')).toLowerCase().includes(s));
-  }, [data, q]);
+    const found = s
+      ? data.filter((d) => (d.name + ' ' + (d.artists || '') + ' ' + (d.title || '')).toLowerCase().includes(s))
+      : data;
+    return [...found].sort((a, b) =>
+      sort === 'near'
+        ? (minutesFrom(anchor, a.zone) ?? 999) - (minutesFrom(anchor, b.zone) ?? 999)
+        : a.name.localeCompare(b.name, 'pt-BR')
+    );
+  }, [data, q, sort, anchor]);
 
   return (
-    <div>
-      <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline">
-        <div className="md:col-span-8">
-          <div className="label-tag terra-text">03 · PAVILHÕES NA CIDADE</div>
-          <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95]">
-            Sem teto fixo
-            <br />
-            <em>nos Giardini</em>
-          </h2>
-          <p className="mt-5 max-w-xl text-[14.5px] muted-text leading-relaxed">
-            {data.length} pavilhões nacionais espalhados em palácios, igrejas e instituições por toda Veneza. Incluem estreias
-            absolutas — Marrocos, Moldávia, Nauru, Guiné Equatorial, Serra Leoa, Somália, El Salvador e Vietnã — e o experimental
-            Pavilhão do Vaticano com Brian Eno, FKA Twigs, Patti Smith e mais 21 artistas.
-          </p>
-        </div>
-        <div className="md:col-span-4 md:text-right text-[13px]">
-          <div className="label-tag muted-text">Pavilhões</div>
-          <div className="ink-text mt-1">{data.length} países</div>
-          <div className="label-tag muted-text mt-4">Estreias absolutas</div>
-          <div className="ink-text mt-1">8 países</div>
-          <div className="label-tag muted-text mt-4">Quando</div>
-          <div className="ink-text mt-1">9 maio → 22 novembro 2026</div>
-        </div>
-      </section>
+    <>
+      <PageHead
+        access="Espalhados por Cannaregio, Dorsoduro, San Marco e Castello"
+        title="Sem teto fixo"
+        italic="nos Giardini"
+        lede={`${data.length} pavilhões nacionais alojados em palácios, igrejas e institutos por toda a cidade. Entre eles, oito estreias absolutas — Marrocos, Moldávia, Nauru, Guiné Equatorial, Serra Leoa, Somália, El Salvador e Vietnã — e o Pavilhão do Vaticano, com Brian Eno, FKA Twigs e Patti Smith entre 24 artistas.`}
+        facts={[
+          { k: 'Países', v: `${data.length}` },
+          { k: 'Estreias absolutas', v: '8' },
+          { k: 'Temporada', v: '9 mai → 22 nov' },
+        ]}
+      />
 
-      <section className="py-5 flex flex-wrap items-center justify-between gap-4 hairline">
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Buscar país, artista ou exposição…"
-          className="bg-paper border border-line px-4 py-2 text-[13px] focus:outline-none focus:border-ink w-full md:w-96"
-        />
-        <div className="label-tag muted-text">{filtered.length} resultado(s)</div>
-      </section>
+      <ControlBar>
+        <div className="flex flex-wrap items-center gap-3">
+          <label htmlFor="busca-cidade" className="sr-only">
+            Buscar país, artista ou exposição
+          </label>
+          <input
+            id="busca-cidade"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Buscar país, artista ou exposição…"
+            className="field w-full sm:w-80"
+          />
+          <div className="seg" role="group" aria-label="Ordenação">
+            <button type="button" aria-pressed={sort === 'az'} onClick={() => setSort('az')}>
+              A → Z
+            </button>
+            <button type="button" aria-pressed={sort === 'near'} onClick={() => setSort('near')}>
+              Mais perto
+            </button>
+          </div>
+        </div>
+        <Eyebrow>
+          <span aria-live="polite">{list.length} pavilhões</span>
+        </Eyebrow>
+      </ControlBar>
 
-      <section className="pt-10 grid md:grid-cols-2 gap-4">
-        {filtered.map((c, i) => (
-          <article key={c.id} className="card cursor-pointer flex flex-col p-7" onClick={() => onSelect(c.id)} style={{ border: '1px solid var(--line)' }}>
-            <div className="flex items-baseline justify-between">
-              <div className="label-tag tnum">{String(i + 1).padStart(3, '0')}</div>
-              {c.highlight && <div className="label-tag" style={{ color: 'var(--terra)' }}>★ Estreia</div>}
-            </div>
-            <h3 className="font-serif italic text-3xl ink-text mt-4 leading-[1.05]">{c.name}</h3>
-            {c.title && <div className="text-[14px] muted-text mt-2 leading-snug">"{c.title}"</div>}
-            <div className="mt-4 text-[13px] ink-text leading-relaxed">
-              {c.artists && (
-                <div>
-                  <span className="label-tag muted-text mr-1">Artistas</span> {c.artists}
-                </div>
-              )}
-              {c.curator && (
-                <div className="mt-2">
-                  <span className="label-tag muted-text mr-1">Curadoria</span> {c.curator}
-                </div>
-              )}
-            </div>
-            {c.note && <div className="hairline mt-4 pt-3 italic muted-text text-[12.5px] leading-relaxed">{c.note}</div>}
-            <div className="mt-auto pt-4 hairline-t flex justify-between items-end text-[12px]">
-              <div className="muted-text leading-snug">{c.address || ''}</div>
-              <div className="terra-text whitespace-nowrap">Saber mais →</div>
-            </div>
+      <section className="mt-10 grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+        {list.map((c) => (
+          <article key={c.id}>
+            <button type="button" onClick={() => onSelect(c.id)} className="card w-full h-full text-left p-6 flex flex-col">
+              <div className="flex items-center justify-between gap-4">
+                <Tick anchor={anchor} zone={c.zone} />
+                {c.highlight && <Eyebrow tone="key">Estreia</Eyebrow>}
+              </div>
+              <h3 className="u-display u-wonk text-[26px] t-1 mt-4">{c.name}</h3>
+              {c.title && <div className="u-display italic text-[16px] t-2 mt-1.5 leading-snug">“{c.title}”</div>}
+              <div className="mt-4 space-y-2.5 flex-1">
+                {c.artists && (
+                  <div>
+                    <Eyebrow>Artistas</Eyebrow>
+                    <div className="text-[15px] t-1 leading-snug mt-0.5">{c.artists}</div>
+                  </div>
+                )}
+                {c.curator && (
+                  <div>
+                    <Eyebrow>Curadoria</Eyebrow>
+                    <div className="text-[15px] t-1 leading-snug mt-0.5">{c.curator}</div>
+                  </div>
+                )}
+              </div>
+              {c.note && <p className="u-prose text-[13.5px] italic mt-4 rule-t pt-3">{c.note}</p>}
+              <div className="mt-4 rule-t pt-3 flex items-baseline justify-between gap-4">
+                <span className="u-mono text-[10.5px] t-3 leading-snug">{appData.zoneNames[c.zone]}</span>
+                <span className="btn-inline" aria-hidden="true">
+                  Ver detalhes →
+                </span>
+              </div>
+            </button>
           </article>
         ))}
       </section>
-    </div>
+
+      {list.length === 0 && (
+        <p className="u-prose italic text-center py-20">Nenhum pavilhão corresponde a “{q}”.</p>
+      )}
+    </>
   );
 }

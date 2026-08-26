@@ -1,93 +1,65 @@
+import { useMemo, useState } from 'react';
 import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
+import { minutesFrom } from '../lib/travelTimes.js';
+import { PageHead, ControlBar, Eyebrow, Tick, VenueFacts, ArtistBios, VenueActions } from './ui.jsx';
 
-export default function Collateral({ data, appData, onSelect }) {
+export default function Collateral({ data, appData, onSelect, anchor }) {
+  const [sort, setSort] = useState('catalog');
   const artistCount = data.reduce((sum, p) => sum + (appData.venueArtists[p.id]?.length || 0), 0);
-  return (
-    <div>
-      <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline">
-        <div className="md:col-span-8">
-          <div className="label-tag terra-text">04 · EVENTOS COLATERAIS</div>
-          <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95]">
-            Espalhados
-            <br />
-            pela cidade
-          </h2>
-          <p className="mt-5 max-w-xl text-[14.5px] muted-text leading-relaxed">
-            31 mostras oficialmente aprovadas pela Bienal e instaladas em palácios, igrejas e fundações venezianas. Aqui as
-            principais, com os artistas em exposição.
-          </p>
-        </div>
-        <div className="md:col-span-4 md:text-right text-[13px]">
-          <div className="label-tag muted-text">Mostras</div>
-          <div className="ink-text mt-1">{data.length} eventos</div>
-          <div className="label-tag muted-text mt-4">Artistas</div>
-          <div className="ink-text mt-1">{artistCount} com biografia detalhada</div>
-          <div className="label-tag muted-text mt-4">Quando</div>
-          <div className="ink-text mt-1">9 maio → 22 novembro 2026</div>
-        </div>
-      </section>
 
-      <section className="pt-10">
-        {data.map((c, i) => {
+  const ordered = useMemo(() => {
+    if (sort !== 'near') return data;
+    return [...data].sort((a, b) => (minutesFrom(anchor, a.zone) ?? 999) - (minutesFrom(anchor, b.zone) ?? 999));
+  }, [data, sort, anchor]);
+
+  return (
+    <>
+      <PageHead
+        access="Chancela oficial da Bienal · sedes independentes"
+        title="Espalhados"
+        italic="pela cidade"
+        lede="Trinta e uma mostras aprovadas oficialmente pela Bienal e instaladas em palácios, igrejas e fundações venezianas. Aqui estão as principais, com os artistas em exposição."
+        facts={[
+          { k: 'Mostras', v: `${data.length}` },
+          { k: 'Artistas com bio', v: `${artistCount}` },
+          { k: 'Temporada', v: '9 mai → 22 nov' },
+        ]}
+      />
+
+      <section className="mt-14">
+        <ControlBar>
+          <Eyebrow>{data.length} eventos colaterais</Eyebrow>
+          <div className="seg" role="group" aria-label="Ordenação">
+            <button type="button" aria-pressed={sort === 'catalog'} onClick={() => setSort('catalog')}>
+              Catálogo
+            </button>
+            <button type="button" aria-pressed={sort === 'near'} onClick={() => setSort('near')}>
+              Mais perto
+            </button>
+          </div>
+        </ControlBar>
+
+        {ordered.map((c) => {
           const bios = biosFor(appData, c.id);
           return (
-            <article key={c.id} className="py-14 grid md:grid-cols-12 gap-10 md:gap-12 fade-in" style={{ borderTop: '1px solid var(--line)' }}>
+            <article key={c.id} className="py-12 grid md:grid-cols-12 gap-x-10 gap-y-8 rule-t">
               <div className="md:col-span-4">
-                <div className="flex items-baseline justify-between">
-                  <div className="font-serif italic text-3xl tnum" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
-                  <div className="label-tag">Colateral</div>
+                <div className="flex items-center justify-between gap-4">
+                  <Tick anchor={anchor} zone={c.zone} />
+                  <Eyebrow>Colateral</Eyebrow>
                 </div>
-                <h3 className="font-serif italic text-4xl tracking-tightest mt-5 ink-text leading-[0.95]">{c.name}</h3>
-                <div className="text-[14px] mt-3 ink-text">{c.org}</div>
-                <dl className="mt-6 hairline pt-5 space-y-3 text-[13px]">
-                  <div>
-                    <dt className="label-tag muted-text">Endereço</dt>
-                    <dd className="ink-text mt-0.5 leading-snug">{c.address}</dd>
-                  </div>
-                  {c.dates && (
-                    <div>
-                      <dt className="label-tag muted-text">Período</dt>
-                      <dd className="terra-text mt-0.5">{c.dates}</dd>
-                    </div>
-                  )}
-                  <div>
-                    <dt className="label-tag muted-text">Localização</dt>
-                    <dd className="ink-text mt-0.5 italic">{appData.zoneNames[c.zone]}</dd>
-                  </div>
-                </dl>
-                <div className="mt-6 flex flex-col gap-2">
-                  <button onClick={() => onSelect(c.id)} className="text-[12px] uppercase tracking-widest terra-text hover:underline text-left">
-                    Ver detalhes →
-                  </button>
-                  <a href={mapsUrlFor(c)} target="_blank" rel="noreferrer" className="text-[12px] uppercase tracking-widest muted-text hover:text-ink hover:underline text-left">
-                    ↗ Google Maps
-                  </a>
-                </div>
+                <h3 className="u-display u-wonk text-[clamp(1.9rem,3.4vw,2.6rem)] t-1 mt-4">{c.name}</h3>
+                <div className="u-display italic text-[18px] t-2 mt-2">{c.org}</div>
+                <VenueFacts venue={c} zoneNames={appData.zoneNames} />
+                <VenueActions venue={c} mapsUrl={mapsUrlFor(c)} onDetail={onSelect} />
               </div>
               <div className="md:col-span-8">
-                {bios.length > 0 && (
-                  <div className="space-y-9">
-                    {bios.map((b, idx) => (
-                      <div key={b.key} className={idx > 0 ? 'pt-9' : ''} style={{ borderTop: idx > 0 ? '1px solid var(--line)' : 'none' }}>
-                        <div className="grid grid-cols-12 gap-4">
-                          <div className="col-span-12 md:col-span-3">
-                            <div className="label-tag">{bios.length > 1 ? `Artista ${idx + 1} / ${bios.length}` : 'O artista'}</div>
-                            <div className="font-serif italic text-3xl ink-text mt-3 leading-[1.05]">{b.name}</div>
-                            <div className="label-tag mt-3">{b.years}</div>
-                          </div>
-                          <div className="col-span-12 md:col-span-9">
-                            <p className="text-[14.5px] ink-text leading-relaxed">{b.bio}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <ArtistBios bios={bios} />
               </div>
             </article>
           );
         })}
       </section>
-    </div>
+    </>
   );
 }

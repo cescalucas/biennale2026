@@ -1,107 +1,121 @@
+import { useEffect, useRef } from 'react';
 import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
+import { Eyebrow, VenueFacts, ArtistBios } from './ui.jsx';
 
-export default function Drawer({ venueId, appData, onClose, onSeeOnMap }) {
+const AREA_LABEL = {
+  giardini: 'Giardini · pavilhão nacional',
+  arsenale: 'Arsenale · pavilhão nacional',
+  city: 'Pavilhão nacional na cidade',
+  collateral: 'Evento colateral oficial',
+  parallel: 'Museu · exposição paralela',
+};
+
+export default function Drawer({ venueId, appData, anchor, onClose, onSeeOnMap }) {
   const v = venueId ? appData.venuesById[venueId] : null;
-  const bios = v ? biosFor(appData, v.id) : [];
   const open = !!v;
+  const panelRef = useRef(null);
+  const closeRef = useRef(null);
+  const restoreRef = useRef(null);
+
+  // Esc fecha; o foco entra no painel ao abrir e volta de onde veio ao fechar.
+  useEffect(() => {
+    if (!open) return;
+    restoreRef.current = document.activeElement;
+    closeRef.current?.focus();
+
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab' || !panelRef.current) return;
+      const focusable = panelRef.current.querySelectorAll(
+        'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      if (restoreRef.current instanceof HTMLElement) restoreRef.current.focus();
+    };
+  }, [open, onClose]);
+
+  const bios = v ? biosFor(appData, v.id) : [];
 
   return (
-    <div className={'fixed inset-0 z-40 ' + (open ? 'pointer-events-auto' : 'pointer-events-none')}>
+    <div className={'fixed inset-0 z-40 ' + (open ? 'pointer-events-auto' : 'pointer-events-none')} aria-hidden={!open}>
       <div
         onClick={onClose}
-        className="absolute inset-0 transition-opacity duration-300"
-        style={{ background: 'rgba(26,22,18,0.55)', opacity: open ? 1 : 0 }}
+        className="drawer-scrim absolute inset-0"
+        style={{ background: 'var(--scrim)', opacity: open ? 1 : 0 }}
       />
       <aside
-        className="absolute right-0 top-0 bottom-0 w-full md:w-[640px] bg-paper overflow-y-auto transition-transform duration-300 shadow-2xl"
-        style={{ transform: open ? 'translateX(0)' : 'translateX(100%)' }}
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={v ? v.name : 'Detalhes do local'}
+        className="drawer-panel absolute right-0 top-0 bottom-0 w-full md:w-[620px] bg-ground overflow-y-auto"
+        style={{
+          transform: open ? 'translateX(0)' : 'translateX(100%)',
+          borderLeft: '1px solid var(--rule)',
+          boxShadow: open ? '-24px 0 60px var(--shadow)' : 'none',
+        }}
       >
         {v && (
-          <div className="p-7 md:p-10">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <div className="label-tag terra-text">
-                  {v.area === 'giardini' && 'Giardini · Pavilhão Nacional'}
-                  {v.area === 'arsenale' && 'Arsenale · Pavilhão Nacional'}
-                  {v.area === 'city' && 'Pavilhão Nacional · na cidade'}
-                  {v.area === 'collateral' && 'Evento Colateral oficial'}
-                  {v.area === 'parallel' && 'Exposição paralela · Museu'}
-                </div>
-                <h3 className="font-serif italic text-4xl md:text-5xl tracking-tightest ink-text leading-[1] mt-3">{v.name}</h3>
-                {v.title && <div className="italic text-lg muted-text mt-2 font-medium">"{v.title}"</div>}
+          <div className="p-6 md:p-9">
+            <div className="flex items-start justify-between gap-5">
+              <div className="min-w-0">
+                <Eyebrow tone="key">{AREA_LABEL[v.area]}</Eyebrow>
+                <h2 className="u-display u-wonk text-[clamp(2rem,5vw,2.9rem)] t-1 mt-3">{v.name}</h2>
+                {v.title && <div className="u-display italic text-[19px] t-2 mt-2">“{v.title}”</div>}
               </div>
-              <button onClick={onClose} className="text-2xl muted-text hover:terra-text leading-none">×</button>
-            </div>
-            <div className="mt-6 hairline pt-5 grid grid-cols-2 gap-x-6 gap-y-3 text-[13px]">
-              {v.artists && (
-                <div className="col-span-2">
-                  <div className="label-tag muted-text">Artista(s)</div>
-                  <div className="ink-text mt-0.5">{v.artists}</div>
-                </div>
-              )}
-              {v.curator && (
-                <div className="col-span-2">
-                  <div className="label-tag muted-text">Curadoria</div>
-                  <div className="ink-text mt-0.5">{v.curator}</div>
-                </div>
-              )}
-              {v.org && (
-                <div className="col-span-2">
-                  <div className="label-tag muted-text">Instituição</div>
-                  <div className="ink-text mt-0.5">{v.org}</div>
-                </div>
-              )}
-              {v.address && (
-                <div className="col-span-2">
-                  <div className="label-tag muted-text">Endereço</div>
-                  <div className="ink-text mt-0.5">{v.address}</div>
-                </div>
-              )}
-              {v.dates && (
-                <div className="col-span-2">
-                  <div className="label-tag muted-text">Período</div>
-                  <div className="terra-text mt-0.5">{v.dates}</div>
-                </div>
-              )}
-              <div className="col-span-2">
-                <div className="label-tag muted-text">Localização</div>
-                <div className="ink-text mt-0.5 italic">{appData.zoneNames[v.zone]}</div>
-              </div>
-            </div>
-            {v.note && (
-              <div className="mt-6 border-l-2 pl-4 italic text-[14px] muted-text leading-relaxed" style={{ borderColor: 'var(--terra)' }}>
-                {v.note}
-              </div>
-            )}
-            {bios.length > 0 ? (
-              <div className="mt-10">
-                <div className="ornament text-2xl italic">❦</div>
-                <div className="label-tag terra-text mt-2">{bios.length > 1 ? 'Os artistas em exposição' : 'O artista em exposição'}</div>
-                <div className="mt-6 space-y-8">
-                  {bios.map((b) => (
-                    <article key={b.key}>
-                      <div className="font-serif italic text-2xl ink-text leading-[1.05] tracking-tightest">{b.name}</div>
-                      <div className="label-tag muted-text mt-1">{b.years}</div>
-                      <p className="text-[14px] ink-text mt-3 leading-relaxed">{b.bio}</p>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="mt-10 text-[13px] muted-text italic leading-relaxed">
-                Esta exposição reúne um coletivo amplo de artistas. Consulte o site oficial da Bienal para a lista completa de
-                participantes.
-              </div>
-            )}
-            <div className="mt-12 pt-6 flex flex-wrap gap-0" style={{ borderTop: '1px solid var(--ink)' }}>
-              <a href={mapsUrlFor(v)} target="_blank" rel="noreferrer" className="pillbtn bg-terra text-paper px-5 py-3 text-[12px] uppercase tracking-widest font-semibold no-underline inline-flex items-center gap-2" style={{ color: '#FFFFFF', border: '1px solid var(--terra)' }}>
-                <span aria-hidden="true">↗</span> Abrir no Google Maps
-              </a>
-              <button onClick={() => onSeeOnMap(v.id)} className="pillbtn px-5 py-3 text-[12px] uppercase tracking-widest" style={{ border: '1px solid var(--ink)', borderLeft: 0 }}>
-                Ver no mapa esquemático
+              <button
+                ref={closeRef}
+                type="button"
+                onClick={onClose}
+                className="btn btn-quiet shrink-0 px-3 py-2"
+                aria-label="Fechar detalhes"
+              >
+                Fechar <span aria-hidden="true">×</span>
               </button>
-              <button onClick={onClose} className="pillbtn px-5 py-3 text-[12px] uppercase tracking-widest muted-text" style={{ border: '1px solid var(--line)', borderLeft: 0 }}>
-                Fechar
+            </div>
+
+            <VenueFacts venue={v} zoneNames={appData.zoneNames} anchor={anchor} />
+
+            {v.note && (
+              <p className="u-prose text-[15px] italic mt-6 pl-4" style={{ borderLeft: '2px solid var(--verde-deep)' }}>
+                {v.note}
+              </p>
+            )}
+
+            <div className="mt-9 rule-strong-t pt-6">
+              <Eyebrow tone="key">{bios.length > 1 ? 'Os artistas em exposição' : 'O artista em exposição'}</Eyebrow>
+              <div className="mt-5">
+                <ArtistBios
+                  bios={bios}
+                  emptyNote="Esta apresentação reúne um coletivo amplo. A lista completa está no site oficial da Bienal."
+                />
+              </div>
+            </div>
+
+            <div className="mt-10 rule-strong-t pt-6 flex flex-wrap gap-2.5">
+              <a href={mapsUrlFor(v)} target="_blank" rel="noreferrer" className="btn btn-key">
+                Abrir no Google Maps <span aria-hidden="true">↗</span>
+              </a>
+              <button type="button" onClick={() => onSeeOnMap(v.id)} className="btn">
+                Ver no mapa esquemático
               </button>
             </div>
           </div>

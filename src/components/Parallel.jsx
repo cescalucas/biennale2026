@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
+import { PageHead, Eyebrow, Tick, VenueFacts, ArtistBios, VenueActions } from './ui.jsx';
 
-export default function Parallel({ data, appData, onSelect }) {
+export default function Parallel({ data, appData, onSelect, anchor }) {
   const byOrg = useMemo(() => {
     const g = {};
     data.forEach((d) => {
@@ -12,105 +13,57 @@ export default function Parallel({ data, appData, onSelect }) {
   const artistCount = data.reduce((sum, p) => sum + (appData.venueArtists[p.id]?.length || 0), 0);
 
   return (
-    <div>
-      <section className="pt-12 pb-10 grid md:grid-cols-12 gap-6 hairline">
-        <div className="md:col-span-8">
-          <div className="label-tag terra-text">05 · MUSEUS & INSTITUIÇÕES</div>
-          <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95]">
-            Em paralelo
-            <br />
-            <em>à Bienal</em>
-          </h2>
-          <p className="mt-5 max-w-xl text-[14.5px] muted-text leading-relaxed">
-            Toda Veneza vira uma extensão da Bienal. Pinault Collection, Fondazione Prada, Querini Stampalia, Cini, Peggy
-            Guggenheim, Berggruen (Palazzo Diedo e Tre Oci), Sandretto, Dries Van Noten — mais Anish Kapoor, Marina Abramović e JR.
-          </p>
-        </div>
-        <div className="md:col-span-4 md:text-right text-[13px]">
-          <div className="label-tag muted-text">Mostras</div>
-          <div className="ink-text mt-1">{data.length} exposições</div>
-          <div className="label-tag muted-text mt-4">Artistas</div>
-          <div className="ink-text mt-1">{artistCount} com biografia</div>
-          <div className="label-tag muted-text mt-4">Quando</div>
-          <div className="ink-text mt-1">9 maio → 22 novembro 2026</div>
-        </div>
-      </section>
+    <>
+      <PageHead
+        access="Instituições da cidade · fora do circuito oficial"
+        title="Em paralelo"
+        italic="à Bienal"
+        lede="De maio a novembro a cidade inteira vira extensão da Bienal. Pinault Collection, Fondazione Prada, Querini Stampalia, Cini, Peggy Guggenheim, Berggruen, Sandretto — mais Anish Kapoor, Marina Abramović e JR."
+        facts={[
+          { k: 'Exposições', v: `${data.length}` },
+          { k: 'Instituições', v: `${Object.keys(byOrg).length}` },
+          { k: 'Artistas com bio', v: `${artistCount}` },
+        ]}
+      />
 
-      {Object.entries(byOrg).map(([org, items], orgIdx) => (
-        <section key={org} className="pt-12">
-          <div className="pt-10 mb-4" style={{ borderTop: '1px solid var(--ink-soft)' }}>
-            <div className="label-tag" style={{ color: 'var(--terra)' }}>№ {String(orgIdx + 1).padStart(2, '0')} · Instituição</div>
-            <div className="font-serif italic text-5xl md:text-6xl tracking-tightest ink-text mt-4 leading-[0.95]">{org}</div>
-            <div className="text-[13px] muted-text mt-3">{items.length} mostra(s) durante a Bienal</div>
+      {Object.entries(byOrg).map(([org, items]) => (
+        <section key={org} className="mt-16">
+          <div className="rule-strong-t pt-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
+            <div>
+              <Eyebrow tone="key">Instituição</Eyebrow>
+              <h2 className="u-display u-wonk text-[clamp(2rem,4.2vw,3.2rem)] t-1 mt-2">{org}</h2>
+            </div>
+            <Eyebrow>
+              {items.length} mostra{items.length > 1 ? 's' : ''} durante a Bienal
+            </Eyebrow>
           </div>
-          {items.map((it, i) => {
+
+          {items.map((it) => {
             const bios = biosFor(appData, it.id);
             return (
-              <article key={it.id} className="mt-10 pt-12 grid md:grid-cols-12 gap-10 md:gap-12 fade-in" style={{ borderTop: '1px solid var(--line)' }}>
+              <article key={it.id} className="py-12 grid md:grid-cols-12 gap-x-10 gap-y-8 rule-t mt-8">
                 <div className="md:col-span-4">
-                  <div className="font-serif italic text-3xl tnum" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
-                  <h4 className="font-serif italic text-3xl md:text-4xl ink-text mt-4 leading-[1] tracking-tightest">{it.name}</h4>
-                  <dl className="mt-5 hairline pt-4 space-y-3 text-[13px]">
-                    {it.curator && (
-                      <div>
-                        <dt className="label-tag muted-text">Curadoria</dt>
-                        <dd className="ink-text mt-0.5">{it.curator}</dd>
-                      </div>
-                    )}
-                    <div>
-                      <dt className="label-tag muted-text">Endereço</dt>
-                      <dd className="ink-text mt-0.5 leading-snug">{it.address}</dd>
-                    </div>
-                    {it.dates && (
-                      <div>
-                        <dt className="label-tag muted-text">Período</dt>
-                        <dd className="terra-text mt-0.5">{it.dates}</dd>
-                      </div>
-                    )}
-                    <div>
-                      <dt className="label-tag muted-text">Localização</dt>
-                      <dd className="ink-text mt-0.5 italic">{appData.zoneNames[it.zone]}</dd>
-                    </div>
-                  </dl>
+                  <Tick anchor={anchor} zone={it.zone} />
+                  <h3 className="u-display italic text-[clamp(1.7rem,3vw,2.3rem)] t-1 mt-4">{it.name}</h3>
+                  <VenueFacts venue={{ ...it, org: undefined }} zoneNames={appData.zoneNames} />
                   {it.note && (
-                    <p className="mt-5 italic text-[13px] muted-text leading-relaxed border-l pl-3" style={{ borderColor: 'var(--terra)' }}>
+                    <p
+                      className="u-prose text-[14px] italic mt-6 pl-4"
+                      style={{ borderLeft: '2px solid var(--verde-deep)' }}
+                    >
                       {it.note}
                     </p>
                   )}
-                  <div className="mt-5 flex flex-col gap-2">
-                    <button onClick={() => onSelect(it.id)} className="text-[12px] uppercase tracking-widest terra-text hover:underline text-left">
-                      Ver detalhes →
-                    </button>
-                    <a href={mapsUrlFor(it)} target="_blank" rel="noreferrer" className="text-[12px] uppercase tracking-widest muted-text hover:text-ink hover:underline text-left">
-                      ↗ Google Maps
-                    </a>
-                  </div>
+                  <VenueActions venue={it} mapsUrl={mapsUrlFor(it)} onDetail={onSelect} />
                 </div>
                 <div className="md:col-span-8">
-                  {bios.length > 0 && (
-                    <div className="space-y-9">
-                      {bios.map((b, idx) => (
-                        <div key={b.key} className={idx > 0 ? 'pt-9' : ''} style={{ borderTop: idx > 0 ? '1px solid var(--line)' : 'none' }}>
-                          <div className="grid grid-cols-12 gap-4">
-                            <div className="col-span-12 md:col-span-3">
-                              <div className="label-tag">{bios.length > 1 ? `Artista ${idx + 1} / ${bios.length}` : 'O artista'}</div>
-                              <div className="font-serif italic text-3xl ink-text mt-3 leading-[1.05]">{b.name}</div>
-                              <div className="label-tag mt-3">{b.years}</div>
-                            </div>
-                            <div className="col-span-12 md:col-span-9">
-                              <p className="text-[14.5px] ink-text leading-relaxed">{b.bio}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <ArtistBios bios={bios} />
                 </div>
               </article>
             );
           })}
         </section>
       ))}
-    </div>
+    </>
   );
 }

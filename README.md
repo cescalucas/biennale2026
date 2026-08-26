@@ -4,6 +4,8 @@ Guia editorial interativo da 61ª Bienal de Arte de Veneza (9 mai → 22 nov 202
 
 Stack: **Vite + React + Tailwind + Supabase**. Deploy: **Netlify**.
 
+O guia se orienta a partir de você: escolhido um ponto de partida no cabeçalho (“Você está em”), cada local do site passa a mostrar quantos minutos leva chegar até lá, e as listas podem ser reordenadas por proximidade.
+
 ---
 
 ## Estrutura
@@ -22,7 +24,8 @@ biennale-app/
 │   ├── index.css            # estilos globais + tema editorial
 │   ├── App.jsx              # roteamento por estado + carregamento de dados
 │   ├── components/
-│   │   ├── Layout.jsx       # Header + Footer
+│   │   ├── ui.jsx           # peças compartilhadas (PageHead, Tick, ArtistBios…)
+│   │   ├── Layout.jsx       # Header + Footer + seletor de ponto de partida
 │   │   ├── Home.jsx
 │   │   ├── PavilionList.jsx # Giardini / Arsenale (editorial long-form)
 │   │   ├── CityPavilions.jsx
@@ -48,7 +51,7 @@ biennale-app/
 │   └── lib/
 │       ├── supabase.js      # client @supabase/supabase-js
 │       ├── dataStore.js     # camada unificada: Supabase OU JSON local
-│       └── travelTimes.js   # Floyd-Warshall sobre o grafo de zonas
+│       └── travelTimes.js   # Floyd-Warshall sobre o grafo de zonas + minutesFrom()
 ├── scripts/
 │   └── seed-supabase.mjs    # popular tabelas via service role
 └── supabase/
@@ -155,10 +158,34 @@ O schema inclui a tabela `user_favorites` com RLS por usuário (`auth.uid()`). P
 | Roteiros         | `src/data/itineraries.js`    |
 | Zonas/distâncias | `src/data/zones.js`          |
 | Cores / tipografia | `src/index.css` + `tailwind.config.js` |
+| Zonas do seletor “Você está em” | `src/data/zones.js` (`ZONE_NAMES`, `EDGES`) |
 
 Depois de editar, rode `npm run seed` para refletir as mudanças no Supabase (se estiver usando).
 
 ---
+
+## Sistema visual
+
+Dois temas, um só conjunto de tokens em `src/index.css`:
+
+| Tema | Atributo | Fundo |
+| --- | --- | --- |
+| Notturno (padrão) | `data-theme="notturno"` | laguna ao anoitecer |
+| Pietra | `data-theme="pietra"` | pedra d'Istria clara |
+
+Nenhum componente escreve cor literal — tudo passa por custom properties (`--ground`, `--verde`, `--ottone`…), inclusive o SVG do mapa. Para mexer na paleta, mexa só nos dois blocos no topo de `src/index.css`.
+
+Tipografia em três papéis, servidos pelo próprio site via `@fontsource` (nada bloqueia o render num terceiro):
+
+| Papel | Fonte | Onde |
+| --- | --- | --- |
+| Display | Fraunces (variável, eixos `SOFT`/`WONK`) | títulos, nomes de artistas — classe `.u-display` |
+| Corpo | Newsreader (variável, eixo `opsz`) | biografias e textos corridos — classe `.u-prose` |
+| Dado | IBM Plex Mono | minutos, datas, contagens, etiquetas, a matriz — classes `.u-mono`, `.u-eyebrow`, `.tick` |
+
+## Rotas
+
+A navegação usa hash: `#/giardini`, `#/map`, e `#/giardini/brasil` para abrir a ficha de um local. Isso faz o botão “voltar” funcionar e torna qualquer local compartilhável por link. O `netlify.toml` já redireciona tudo para `/index.html`.
 
 ## Créditos
 
