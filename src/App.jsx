@@ -58,6 +58,18 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
+  // O herói sangra até a borda da janela. 100vw inclui a barra de rolagem,
+  // então medimos a diferença e descontamos no CSS.
+  useEffect(() => {
+    const medir = () => {
+      const sbw = window.innerWidth - document.documentElement.clientWidth;
+      document.documentElement.style.setProperty('--sbw', Math.max(0, sbw) + 'px');
+    };
+    medir();
+    window.addEventListener('resize', medir);
+    return () => window.removeEventListener('resize', medir);
+  }, []);
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     try {
@@ -138,7 +150,7 @@ export default function App() {
         zoneNames={data.zoneNames}
       />
       <main id="conteudo" className="px-5 md:px-10 lg:px-14 max-w-shell mx-auto pb-20 enter" key={view} tabIndex={-1}>
-        {view === 'home' && <Home data={data} setView={goTo} anchor={anchor} />}
+        {view === 'home' && <Home data={data} setView={goTo} anchor={anchor} onOpenVenue={openDetail} />}
         {view === 'giardini' && (
           <PavilionList area="giardini" data={data.pavilionsGiardini} mainExhibition={data.mainExhibition} {...shared} />
         )}

@@ -549,3 +549,148 @@ select.field {
 
 details summary { cursor: pointer; list-style: none; }
 details summary::-webkit-details-marker { display: none; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   O CAMPO VIVO — a home
+   ────────────────────────────────────────────────────────────────────────
+   O herói ocupa a largura da janela inteira. --sbw guarda a largura da barra
+   de rolagem (medida em App.jsx), senão 100vw estoura a página na horizontal.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.field-hero {
+  position: relative;
+  width: calc(100vw - var(--sbw, 0px));
+  margin-inline: calc(50% - (100vw - var(--sbw, 0px)) / 2);
+  height: min(88svh, 880px);
+  min-height: 540px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--rule-soft);
+  isolation: isolate;
+}
+
+.field-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Véu: só o bastante para o texto pousar. O campo continua visível atrás. */
+.field-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(100deg, var(--ground) 0%, color-mix(in srgb, var(--ground) 72%, transparent) 34%, transparent 62%),
+    linear-gradient(0deg, color-mix(in srgb, var(--ground) 88%, transparent) 0%, transparent 34%);
+}
+
+.field-over {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  max-width: var(--shell, 1400px);
+  margin: 0 auto;
+  padding: clamp(28px, 6vh, 64px) clamp(20px, 4vw, 56px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 28px;
+  pointer-events: none;
+}
+.field-over > * { pointer-events: auto; }
+
+.hero-mark {
+  font-family: 'Fraunces Variable', Georgia, serif;
+  font-optical-sizing: auto;
+  font-variation-settings: 'SOFT' 28, 'WONK' 1;
+  font-weight: 400;
+  font-size: clamp(3.2rem, 12vw, 10rem);
+  line-height: 0.84;
+  letter-spacing: -0.045em;
+  color: var(--text);
+  margin: clamp(14px, 2.4vh, 26px) 0 0 -0.055em;
+}
+.hero-mark em {
+  font-style: italic;
+  display: block;
+  color: var(--verde);
+}
+
+.hero-lede {
+  font-size: clamp(15px, 1.5vw, 19px);
+  line-height: 1.55;
+  color: var(--text-2);
+  max-width: 40ch;
+  margin-top: clamp(14px, 2.2vh, 26px);
+}
+
+.field-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+  max-width: 860px;
+}
+.field-read {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: var(--text-3);
+  max-width: 52ch;
+  margin: 0;
+}
+
+.field-legend {
+  position: absolute;
+  z-index: 2;
+  right: clamp(20px, 4vw, 56px);
+  top: clamp(28px, 6vh, 64px);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  align-items: flex-end;
+}
+.field-legend-item {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.field-legend-item i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: block;
+}
+
+/* Entrada do herói: uma sequência, não efeitos espalhados. */
+.field-over .u-eyebrow { animation: heroIn 0.7s cubic-bezier(0.16, 0.8, 0.28, 1) 0.05s both; }
+.hero-mark { animation: heroIn 0.9s cubic-bezier(0.16, 0.8, 0.28, 1) 0.14s both; }
+.hero-lede { animation: heroIn 0.9s cubic-bezier(0.16, 0.8, 0.28, 1) 0.3s both; }
+.field-controls { animation: heroIn 0.9s cubic-bezier(0.16, 0.8, 0.28, 1) 0.44s both; }
+.field-legend { animation: heroIn 0.9s ease 0.6s both; }
+
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 720px) {
+  .field-legend { display: none; }
+  .field-hero { height: min(84svh, 680px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field-over .u-eyebrow,
+  .hero-mark,
+  .hero-lede,
+  .field-controls,
+  .field-legend { animation: none; }
+}
