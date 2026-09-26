@@ -37,6 +37,9 @@ export default function Home({ data, setView }) {
             <button onClick={() => setView('tickets')} className="pillbtn px-6 py-3 text-[12px] tracking-widest" style={{ border: '1px solid var(--terra)', borderLeft: 0, color: 'var(--terra)' }}>
               🎟 ingressos & horários
             </button>
+            <button onClick={() => setView('trip')} className="pillbtn px-6 py-3 text-[12px] tracking-widest uppercase font-semibold" style={{ background: 'var(--terra)', color: '#FFFFFF', border: '1px solid var(--terra)', borderLeft: 0 }}>
+              roteiro dom → qui
+            </button>
           </div>
         </div>
 

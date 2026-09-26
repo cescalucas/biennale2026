@@ -9,6 +9,7 @@ const LINKS = [
   { id: 'map', label: 'Mapa' },
   { id: 'itineraries', label: 'Roteiros' },
   { id: 'tickets', label: 'Ingressos' },
+  { id: 'trip', label: 'Viagem' },
 ];
 
 function ThemeToggle({ theme, setTheme }) {

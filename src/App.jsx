@@ -11,6 +11,7 @@ import MapView from './components/MapView.jsx';
 import Itineraries from './components/Itineraries.jsx';
 import Drawer from './components/Drawer.jsx';
 import Tickets from './components/Tickets.jsx';
+import TripPlan from './components/TripPlan.jsx';
 
 const THEME_KEY = 'biennale-theme';
 
@@ -95,6 +96,7 @@ export default function App() {
         )}
         {view === 'itineraries' && <Itineraries data={data.itineraries} setView={goTo} />}
         {view === 'tickets' && <Tickets appData={data} onSelect={openDetail} />}
+        {view === 'trip' && <TripPlan appData={data} onSelect={openDetail} setView={goTo} />}
       </main>
       <Footer />
       <Drawer venueId={drawerId} appData={data} onClose={() => setDrawerId(null)} onSeeOnMap={seeOnMap} />

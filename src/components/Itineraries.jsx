@@ -26,6 +26,15 @@ export default function Itineraries({ data, setView }) {
         </div>
       </section>
 
+      <section className="py-5 hairline flex flex-wrap items-center justify-between gap-4">
+        <div className="text-[13.5px] muted-text">
+          Chegando no domingo e saindo na quinta? Há um roteiro dia a dia pronto, com reservas e horários.
+        </div>
+        <button onClick={() => setView('trip')} className="pillbtn px-4 py-2 text-[12px] uppercase tracking-widest font-semibold" style={{ background: 'var(--terra)', color: '#FFFFFF', border: '1px solid var(--terra)' }}>
+          Minha viagem · dom → qui →
+        </button>
+      </section>
+
       <section className="py-6 flex flex-wrap gap-2 hairline">
         {data.map((r) => (
           <button
