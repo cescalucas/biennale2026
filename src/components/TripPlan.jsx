@@ -13,17 +13,18 @@ const addDays = (d, n) => {
 };
 const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-// Domingos possíveis de chegada: do próximo domingo até o último que ainda pega a Bienal na quinta.
-function sundayOptions() {
+// Sábados possíveis de chegada: do próximo sábado até o último cuja quinta ainda pega a Bienal.
+function saturdayOptions() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const first = addDays(today, (7 - today.getDay()) % 7);
+  const first = addDays(today, (6 - today.getDay() + 7) % 7);
   const last = new Date('2026-11-22T00:00:00');
   const out = [];
-  for (let d = first; addDays(d, 4) <= last; d = addDays(d, 7)) out.push(d);
+  for (let d = first; addDays(d, 5) <= last; d = addDays(d, 7)) out.push(d);
   if (out.length === 0) out.push(first);
   return out;
 }
+const FIRST_DAY_OFFSET = 1; // domingo = chegada + 1
 
 function Step({ step, venue, date, onSelect, muted = false }) {
   const st = venue ? venueStatus(venue, date) : null;
@@ -82,7 +83,7 @@ function Step({ step, venue, date, onSelect, muted = false }) {
 }
 
 export default function TripPlan({ appData, onSelect, setView }) {
-  const options = useMemo(sundayOptions, []);
+  const options = useMemo(saturdayOptions, []);
   // Data de chegada e checklist ficam salvos no aparelho.
   const [arrivalIso, setArrivalIso] = usePersistentState('trip.arrival', null);
   const arrival = options.find((o) => iso(o) === arrivalIso) || options[0];
@@ -90,7 +91,8 @@ export default function TripPlan({ appData, onSelect, setView }) {
   const [checked, setChecked] = usePersistentState('trip.checklist', {});
   const toggle = (k) => setChecked((c) => ({ ...c, [k]: !c[k] }));
   const doneCount = TRIP.checklist.filter((c) => checked[c.text]).length;
-  const days = TRIP.days.map((d, i) => ({ ...d, date: addDays(arrival, i) }));
+  const days = TRIP.days.map((d, i) => ({ ...d, date: addDays(arrival, FIRST_DAY_OFFSET + i) }));
+  const lastDay = addDays(arrival, FIRST_DAY_OFFSET + TRIP.days.length - 1);
   const V = appData.venuesById;
 
   // Mostras do roteiro que já terão encerrado na data escolhida
@@ -104,28 +106,29 @@ export default function TripPlan({ appData, onSelect, setView }) {
         <div className="md:col-span-8">
           <div className="label-tag terra-text">10 · MINHA VIAGEM</div>
           <h2 className="font-serif italic text-5xl md:text-7xl tracking-tightest mt-5 ink-text leading-[0.95]">
-            Domingo
+            Sábado à noite
             <br />
             <em>→ quinta, 20h</em>
           </h2>
           <p className="mt-5 max-w-xl text-[14.5px] muted-text leading-relaxed">
             {TRIP.subtitle}. A lógica é simples: segunda a Bienal fecha e os museus privados abrem; terça a maioria deles fecha e
-            a Bienal abre. Então domingo é Cannaregio (ao lado da estação), segunda é Pinault, e terça, quarta e quinta são
-            Bienal: Giardini, Corderie do Arsenale e os pavilhões do Arsenale. Três noites no Londra Palace, na porta de San Zaccaria, e duas no JW Marriott, na Isola delle Rose, de onde sai o táxi aquático para o aeroporto.
+            a Bienal abre. Então domingo é Cannaregio de manhã e Accademia à tarde, segunda é Pinault, e terça, quarta e quinta
+            são Bienal: Giardini, Corderie do Arsenale e os pavilhões do Arsenale. Quatro noites no Londra Palace, na porta de
+            San Zaccaria, e duas no JW Marriott, na Isola delle Rose, de onde sai o táxi aquático para o aeroporto.
           </p>
         </div>
         <div className="md:col-span-4 md:text-right text-[13px]">
-          <div className="label-tag muted-text">Chegada no domingo</div>
+          <div className="label-tag muted-text">Chegada no sábado à noite</div>
           <select value={iso(arrival)} onChange={(e) => setArrival(options.find((o) => iso(o) === e.target.value) || options[0])} className="mt-1 border border-line px-3 py-2 text-[13px] w-full md:w-auto">
             {options.map((o) => (
               <option key={iso(o)} value={iso(o)}>
-                dom {fmt(o)} → qui {fmt(addDays(o, 4))}
+                sáb {fmt(o)} → qui {fmt(addDays(o, 5))}
               </option>
             ))}
           </select>
           <div className="label-tag muted-text mt-4">Bienal nesses dias</div>
-          <div className="ink-text mt-1">{biennaleHoursOn(addDays(arrival, 2))}</div>
-          <div className="muted-text">fechada na segunda{iso(addDays(arrival, 1)) === '2026-11-16' ? ' (exceto 16 nov: aberta!)' : ''}</div>
+          <div className="ink-text mt-1">{biennaleHoursOn(addDays(arrival, 3))}</div>
+          <div className="muted-text">fechada na segunda{iso(addDays(arrival, 2)) === '2026-11-16' ? ' (exceto 16 nov: aberta!)' : ''}</div>
           <div className="label-tag muted-text mt-4">Volta</div>
           <div className="ink-text mt-1">{TRIP.departure}</div>
         </div>
@@ -194,7 +197,7 @@ export default function TripPlan({ appData, onSelect, setView }) {
             {TRIP.checklist.map((c, i) => {
               const v = c.venueId ? V[c.venueId] : null;
               const url = c.url || v?.visit?.ticketUrl;
-              const ended = v && venueStatus(v, addDays(arrival, 4)) === 'encerrada';
+              const ended = v && venueStatus(v, lastDay) === 'encerrada';
               return (
                 <li key={i} className={'flex items-start gap-3 ' + (ended ? 'opacity-50 line-through' : '')}>
                   <input id={'chk-' + i} type="checkbox" className="mt-1" checked={!!checked[c.text]} onChange={() => toggle(c.text)} />
@@ -210,6 +213,29 @@ export default function TripPlan({ appData, onSelect, setView }) {
               );
             })}
           </ul>
+        </div>
+      </section>
+
+      {/* Dia 0 · chegada */}
+      <section className="pt-14">
+        <div className="pt-10 grid md:grid-cols-12 gap-6" style={{ borderTop: '1px solid var(--ink-soft)' }}>
+          <div className="md:col-span-4">
+            <div className="label-tag" style={{ color: 'var(--terra)' }}>
+              Dia 0 · {TRIP.arrivalDay.name} {fmt(arrival)}
+            </div>
+            <div className="font-serif italic text-3xl md:text-4xl tracking-tightest ink-text mt-4 leading-[0.95]">{TRIP.arrivalDay.theme}</div>
+            <div className="mt-4 text-[12.5px] flex flex-wrap items-baseline gap-x-2">
+              <span className="label-tag muted-text">Base</span>
+              <span className="ink-text">{TRIP.hotels.find((h) => h.id === TRIP.arrivalDay.stay)?.name}</span>
+            </div>
+          </div>
+          <div className="md:col-span-8">
+            <ol className="space-y-5">
+              {TRIP.arrivalDay.steps.map((s, j) => (
+                <Step key={j} step={s} venue={null} date={arrival} onSelect={onSelect} muted />
+              ))}
+            </ol>
+          </div>
         </div>
       </section>
 
