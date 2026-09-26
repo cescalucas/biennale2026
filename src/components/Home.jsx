@@ -6,6 +6,8 @@ export default function Home({ data, setView }) {
     { id: 'collateral', n: 'IV', t: 'Colaterais', sub: 'Mostras oficiais aprovadas pela Bienal', count: data.collateral.length, label: 'mostras' },
     { id: 'parallel', n: 'V', t: 'Museus & galerias', sub: 'Pinault, Prada, Querini, Kapoor, Abramović, JR', count: data.parallel.length, label: 'exposições' },
   ];
+  const outside = [...data.parallel, ...data.collateral, ...data.pavilionsCity];
+  const outsideFree = outside.filter((v) => v.visit?.free).length;
 
   return (
     <div>
@@ -31,6 +33,9 @@ export default function Home({ data, setView }) {
             </button>
             <button onClick={() => setView('map')} className="pillbtn px-6 py-3 text-[12px] tracking-widest muted-text" style={{ border: '1px solid var(--line)', borderLeft: 0 }}>
               mapa
+            </button>
+            <button onClick={() => setView('tickets')} className="pillbtn px-6 py-3 text-[12px] tracking-widest" style={{ border: '1px solid var(--terra)', borderLeft: 0, color: 'var(--terra)' }}>
+              🎟 ingressos & horários
             </button>
           </div>
         </div>
@@ -106,6 +111,34 @@ export default function Home({ data, setView }) {
                 <div className="label-tag">{s.label}</div>
                 <div className="text-sm" style={{ color: 'var(--terra)' }}>→</div>
               </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-24 grid md:grid-cols-12 gap-10 items-start">
+        <div className="md:col-span-5 hairline-t pt-6">
+          <div className="label-tag">Planejar</div>
+          <div className="font-serif italic text-4xl md:text-5xl ink-text mt-3 tracking-tightest leading-[1]">Onde, que dia e como entrar</div>
+          <p className="mt-5 text-[14px] muted-text leading-[1.75] max-w-md">
+            Horário de abertura, dia de fechamento, preço e link oficial de compra ou reserva para a Bienal e para cada uma das{' '}
+            {outside.length} atividades fora dela — museus, colaterais e pavilhões na cidade. {outsideFree} têm entrada gratuita.
+          </p>
+          <button onClick={() => setView('tickets')} className="mt-7 pillbtn px-6 py-3 text-[12px] tracking-widest uppercase font-semibold" style={{ background: 'var(--terra)', color: '#FFFFFF', border: '1px solid var(--terra)' }}>
+            🎟 Ver ingressos e horários →
+          </button>
+        </div>
+        <div className="md:col-span-7 hairline-t pt-6 grid grid-cols-2 gap-x-6 gap-y-6 text-[13px]">
+          {[
+            ['Bienal · Giardini e Arsenale', 'ingresso único · fechado às segundas', 'tickets'],
+            ['Museus & fundações', `${data.parallel.length} mostras · Pinault fecha às terças`, 'parallel'],
+            ['Eventos Colaterais', `${data.collateral.length} mostras · quase todas gratuitas`, 'collateral'],
+            ['Pavilhões na cidade', `${data.pavilionsCity.length} países · entrada gratuita`, 'city'],
+          ].map(([t, d, v]) => (
+            <div key={t} className="cursor-pointer card p-4" style={{ border: '1px solid var(--line)' }} onClick={() => setView(v)}>
+              <div className="font-serif italic text-lg ink-text leading-tight">{t}</div>
+              <div className="muted-text mt-1.5 leading-snug">{d}</div>
+              <div className="terra-text mt-3 text-[12px]">→</div>
             </div>
           ))}
         </div>

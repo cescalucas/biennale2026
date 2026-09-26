@@ -27,8 +27,34 @@ create table if not exists public.venues (
   x integer,
   y integer,
   highlight boolean default false,
+  -- Informações práticas de visita (horário, dias, preço, ingresso)
+  hours text,
+  closed text,
+  closed_days integer[],
+  price text,
+  free boolean,
+  ticket_url text,
+  ticket_kind text check (ticket_kind in ('compra','reserva','site','gratis')),
+  website text,
+  booking text,
+  ends date,
+  verified text check (verified in ('alta','média','baixa')),
   created_at timestamptz default now()
 );
+
+-- Migração para bancos já criados antes das colunas de visita:
+alter table public.venues
+  add column if not exists hours text,
+  add column if not exists closed text,
+  add column if not exists closed_days integer[],
+  add column if not exists price text,
+  add column if not exists free boolean,
+  add column if not exists ticket_url text,
+  add column if not exists ticket_kind text,
+  add column if not exists website text,
+  add column if not exists booking text,
+  add column if not exists ends date,
+  add column if not exists verified text;
 
 create index if not exists venues_area_idx on public.venues (area);
 create index if not exists venues_zone_idx on public.venues (zone);
@@ -112,3 +138,6 @@ create policy "Own favorites" on public.user_favorites
 --    essa chave no front-end).
 -- 3. Os campos x/y são coordenadas SVG (viewBox 1100×720) usadas
 --    pelo mapa estilizado de Veneza.
+-- 4. As colunas de visita (hours … verified) são opcionais: quando NULL
+--    o front usa src/data/visitorInfo.js (e, para pavilhões na cidade,
+--    o padrão CITY_PAVILION_DEFAULT).

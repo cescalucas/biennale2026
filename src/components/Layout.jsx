@@ -8,6 +8,7 @@ const LINKS = [
   { id: 'artists', label: 'Artistas' },
   { id: 'map', label: 'Mapa' },
   { id: 'itineraries', label: 'Roteiros' },
+  { id: 'tickets', label: 'Ingressos' },
 ];
 
 function ThemeToggle({ theme, setTheme }) {

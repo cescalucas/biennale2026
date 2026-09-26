@@ -1,4 +1,5 @@
 import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
+import { VisitRows, TicketLink, WebsiteLink, StatusBadge } from './VisitInfo.jsx';
 
 export default function Collateral({ data, appData, onSelect }) {
   const artistCount = data.reduce((sum, p) => sum + (appData.venueArtists[p.id]?.length || 0), 0);
@@ -35,7 +36,10 @@ export default function Collateral({ data, appData, onSelect }) {
               <div className="md:col-span-4">
                 <div className="flex items-baseline justify-between">
                   <div className="font-serif italic text-3xl tnum" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
-                  <div className="label-tag">Colateral</div>
+                  <div className="flex items-center gap-2">
+                    <StatusBadge venue={c} />
+                    <div className="label-tag">Colateral</div>
+                  </div>
                 </div>
                 <h3 className="font-serif italic text-4xl tracking-tightest mt-5 ink-text leading-[0.95]">{c.name}</h3>
                 <div className="text-[14px] mt-3 ink-text">{c.org}</div>
@@ -54,11 +58,14 @@ export default function Collateral({ data, appData, onSelect }) {
                     <dt className="label-tag muted-text">Localização</dt>
                     <dd className="ink-text mt-0.5 italic">{appData.zoneNames[c.zone]}</dd>
                   </div>
+                  <VisitRows visit={c.visit} />
                 </dl>
                 <div className="mt-6 flex flex-col gap-2">
                   <button onClick={() => onSelect(c.id)} className="text-[12px] uppercase tracking-widest terra-text hover:underline text-left">
                     Ver detalhes →
                   </button>
+                  <TicketLink visit={c.visit} />
+                  <WebsiteLink visit={c.visit} />
                   <a href={mapsUrlFor(c)} target="_blank" rel="noreferrer" className="text-[12px] uppercase tracking-widest muted-text hover:text-ink hover:underline text-left">
                     ↗ Google Maps
                   </a>

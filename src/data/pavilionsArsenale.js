@@ -21,4 +21,8 @@ export const PAVILIONS_ARSENALE = [
   { id: 'india', name: 'Índia', artists: 'Alwar Balasubramaniam (Bala) · Sumakshi Singh · Ranjani Shettar · Asim Waqif · Skarma Sonam Tashi', title: 'Geographies of Distance: remembering home', zone: 'A', x: 765, y: 445 },
   { id: 'rep-dominicana', name: 'República Dominicana', artists: 'Curadoria coletiva LAD (Laboratorio de Arquitectura Dominicana)', zone: 'A', x: 810, y: 470 },
   { id: 'panama', name: 'Panamá · Tesa 42', artists: 'Antonio José Guzmán & Iva Jankovic', curator: 'Ana Elizabeth González · Mónica Kupfer', title: 'Tropical Hyperstition', zone: 'A', x: 790, y: 415 },
+  { id: 'irlanda', name: 'Irlanda', artists: 'Isabel Nolan', curator: 'Georgina Jackson (The Douglas Hyde)', title: 'Dreamshook', note: 'No Arsenale em 2026 (não na cidade).', zone: 'A', x: 800, y: 480 },
+  { id: 'marrocos', name: 'Marrocos · estreia', artists: 'Amina Agueznay', curator: 'Meriem Berrada', title: 'Asǝṭṭa', note: 'Primeiro pavilhão nacional do Marrocos — Artiglierie do Arsenale.', highlight: true, zone: 'A', x: 815, y: 490 },
+  { id: 'arabia', name: 'Arábia Saudita', artists: 'Dana Awartani', title: 'May Your Tears Never Dry, You Who Weep Over Stones', address: "Arsenale · Sale d'Armi", zone: 'A', x: 825, y: 505 },
+  { id: 'oma', name: 'Omã', artists: 'Haitham Al Busafi', title: 'Zīnah', note: 'No Arsenale em 2026.', zone: 'A', x: 830, y: 475 },
 ];
