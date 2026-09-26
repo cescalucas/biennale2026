@@ -76,10 +76,11 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
         </label>
       </section>
 
-      <section className="grid lg:grid-cols-12 gap-6 mt-6">
-        <div className="lg:col-span-8">
+      <section className="grid lg:grid-cols-12 gap-6 mt-6 min-w-0">
+        <div className="lg:col-span-8 min-w-0">
           <VeniceMap appData={appData} selectedId={selectedId} setSelectedId={setSelectedId} hoveredId={hoveredId} setHoveredId={setHoveredId} filter={filter} showVaporetto={showVaporetto} />
           <div className="text-[11px] muted-text mt-2 italic">
+            <span className="md:hidden">No celular, arraste o mapa para os lados e toque num ponto. </span>
             Mapa esquemático. Tempos calculados pelo trajeto mais rápido (caminhada ou vaporetto ACTV linha 1, 2, 4.1, 5.1).
           </div>
         </div>

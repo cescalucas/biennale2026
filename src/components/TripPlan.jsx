@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { usePersistentState } from '../lib/usePersistentState.js';
 import { TRIP, biennaleHoursOn } from '../data/tripPlan.js';
 import { mapsUrlFor, isOpenOnWeekday, venueStatus, formatShortDate, WEEKDAYS_PT } from '../lib/dataStore.js';
 import { TicketLink } from './VisitInfo.jsx';
@@ -82,7 +83,13 @@ function Step({ step, venue, date, onSelect, muted = false }) {
 
 export default function TripPlan({ appData, onSelect, setView }) {
   const options = useMemo(sundayOptions, []);
-  const [arrival, setArrival] = useState(options[0]);
+  // Data de chegada e checklist ficam salvos no aparelho.
+  const [arrivalIso, setArrivalIso] = usePersistentState('trip.arrival', null);
+  const arrival = options.find((o) => iso(o) === arrivalIso) || options[0];
+  const setArrival = (d) => setArrivalIso(iso(d));
+  const [checked, setChecked] = usePersistentState('trip.checklist', {});
+  const toggle = (k) => setChecked((c) => ({ ...c, [k]: !c[k] }));
+  const doneCount = TRIP.checklist.filter((c) => checked[c.text]).length;
   const days = TRIP.days.map((d, i) => ({ ...d, date: addDays(arrival, i) }));
   const V = appData.venuesById;
 
@@ -104,7 +111,7 @@ export default function TripPlan({ appData, onSelect, setView }) {
           <p className="mt-5 max-w-xl text-[14.5px] muted-text leading-relaxed">
             {TRIP.subtitle}. A lógica é simples: segunda a Bienal fecha e os museus privados abrem; terça a maioria deles fecha e
             a Bienal abre. Então domingo é Cannaregio (ao lado da estação), segunda é Pinault, e terça, quarta e quinta são
-            Bienal: Giardini, Corderie do Arsenale e os pavilhões do Arsenale, com saída de barco direto para o aeroporto.
+            Bienal: Giardini, Corderie do Arsenale e os pavilhões do Arsenale. Três noites no Londra Palace, na porta de San Zaccaria, e duas no JW Marriott, na Isola delle Rose, de onde sai o táxi aquático para o aeroporto.
           </p>
         </div>
         <div className="md:col-span-4 md:text-right text-[13px]">
@@ -143,6 +150,21 @@ export default function TripPlan({ appData, onSelect, setView }) {
           <div className="label-tag" style={{ color: 'var(--terra)' }}>Antes de sair de casa</div>
           <div className="font-serif italic text-4xl md:text-5xl tracking-tightest ink-text mt-4 leading-[0.95]">Bilhetes, passes e a volta</div>
         </div>
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
+          {TRIP.hotels.map((h) => (
+            <div key={h.id} className="p-6 flex flex-col" style={{ border: '1px solid var(--ink-soft)' }}>
+              <div className="flex items-baseline justify-between gap-3">
+                <div className="label-tag terra-text">Hotel · {h.nights}</div>
+                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.mapsQuery)}`} target="_blank" rel="noreferrer" className="text-[11.5px] uppercase tracking-widest muted-text hover:text-ink hover:underline">
+                  ↗ Maps
+                </a>
+              </div>
+              <div className="font-serif italic text-2xl ink-text mt-2 leading-tight">{h.name}</div>
+              <div className="text-[13px] ink-text mt-1">{h.address}</div>
+              <p className="text-[13px] muted-text mt-3 leading-relaxed">{h.note}</p>
+            </div>
+          ))}
+        </div>
         <div className="grid md:grid-cols-3 gap-6">
           {TRIP.tickets.map((t) => (
             <div key={t.label} className="p-6" style={{ border: '1px solid var(--line)' }}>
@@ -158,7 +180,15 @@ export default function TripPlan({ appData, onSelect, setView }) {
         <div className="mt-8 grid md:grid-cols-12 gap-8">
           <div className="md:col-span-4">
             <div className="label-tag muted-text">Checklist de reservas</div>
-            <div className="text-[13px] muted-text mt-2 leading-relaxed">Marque conforme for comprando. A ordem é a do roteiro.</div>
+            <div className="font-serif italic text-2xl ink-text mt-2 tnum">
+              {doneCount} / {TRIP.checklist.length}
+            </div>
+            <div className="text-[13px] muted-text mt-2 leading-relaxed">Marque conforme for comprando; fica salvo neste aparelho. A ordem é a do roteiro.</div>
+            {doneCount > 0 && (
+              <button onClick={() => setChecked({})} className="mt-3 text-[11.5px] uppercase tracking-widest muted-text hover:text-ink hover:underline">
+                limpar marcações
+              </button>
+            )}
           </div>
           <ul className="md:col-span-8 space-y-2.5 text-[13.5px]">
             {TRIP.checklist.map((c, i) => {
@@ -167,15 +197,15 @@ export default function TripPlan({ appData, onSelect, setView }) {
               const ended = v && venueStatus(v, addDays(arrival, 4)) === 'encerrada';
               return (
                 <li key={i} className={'flex items-start gap-3 ' + (ended ? 'opacity-50 line-through' : '')}>
-                  <input type="checkbox" className="mt-1" />
-                  <span className="ink-text leading-snug">
+                  <input id={'chk-' + i} type="checkbox" className="mt-1" checked={!!checked[c.text]} onChange={() => toggle(c.text)} />
+                  <label htmlFor={'chk-' + i} className={'leading-snug cursor-pointer ' + (checked[c.text] ? 'muted-text line-through' : 'ink-text')}>
                     {c.text}
                     {url && (
                       <a href={url} target="_blank" rel="noreferrer" className="ml-2 text-[11.5px] uppercase tracking-widest terra-text hover:underline whitespace-nowrap">
                         ↗ link
                       </a>
                     )}
-                  </span>
+                  </label>
                 </li>
               );
             })}
@@ -192,6 +222,12 @@ export default function TripPlan({ appData, onSelect, setView }) {
                 Dia {i + 1} · {d.name} {fmt(d.date)}
               </div>
               <div className="font-serif italic text-4xl md:text-5xl tracking-tightest ink-text mt-4 leading-[0.95]">{d.theme}</div>
+              {d.stay && (
+                <div className="mt-4 text-[12.5px] flex flex-wrap items-baseline gap-x-2">
+                  <span className="label-tag muted-text">Base</span>
+                  <span className="ink-text">{TRIP.hotels.find((h) => h.id === d.stay)?.name}</span>
+                </div>
+              )}
               <p className="text-[13.5px] muted-text mt-5 leading-relaxed">{d.why}</p>
             </div>
             <div className="md:col-span-8">

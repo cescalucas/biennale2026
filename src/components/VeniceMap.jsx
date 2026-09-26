@@ -25,6 +25,7 @@ export default function VeniceMap({ appData, selectedId, setSelectedId, hoveredI
       : 'var(--ink)';
 
   return (
+    <div className="map-scroll">
     <div className="map-container rounded-sm overflow-hidden" style={{ aspectRatio: '1100/720', borderColor: 'var(--line)' }}>
       <svg viewBox="0 0 1100 720" className="w-full h-full" style={{ display: 'block', background: BG }}>
         <defs>
@@ -231,6 +232,7 @@ export default function VeniceMap({ appData, selectedId, setSelectedId, hoveredI
           <text x="0" y="52" fontSize="11" fill={TYPE_BRIGHT} fontFamily="'Inter Tight', sans-serif" fontStyle="italic" letterSpacing="0.5">61ª · In Minor Keys</text>
         </g>
       </svg>
+    </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { loadData } from './lib/dataStore.js';
-import { Header, Footer } from './components/Layout.jsx';
+import { usePersistentState } from './lib/usePersistentState.js';
+import { Header, Footer, MobileBar } from './components/Layout.jsx';
 import Home from './components/Home.jsx';
 import PavilionList from './components/PavilionList.jsx';
 import CityPavilions from './components/CityPavilions.jsx';
@@ -26,10 +27,10 @@ function readInitialTheme() {
 
 export default function App() {
   const [data, setData] = useState(null);
-  const [view, setView] = useState('home');
+  const [view, setView] = usePersistentState('view', 'home'); // reabre na última aba
   const [selectedId, setSelectedId] = useState(null);
   const [hoveredId, setHoveredId] = useState(null);
-  const [mapFilter, setMapFilter] = useState('all');
+  const [mapFilter, setMapFilter] = usePersistentState('map.filter', 'all');
   const [showVaporetto, setShowVaporetto] = useState(true);
   const [drawerId, setDrawerId] = useState(null);
   const [theme, setTheme] = useState(readInitialTheme);
@@ -99,6 +100,7 @@ export default function App() {
         {view === 'trip' && <TripPlan appData={data} onSelect={openDetail} setView={goTo} />}
       </main>
       <Footer />
+      <MobileBar view={view} setView={goTo} />
       <Drawer venueId={drawerId} appData={data} onClose={() => setDrawerId(null)} onSeeOnMap={seeOnMap} />
     </div>
   );
