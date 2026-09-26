@@ -4,14 +4,25 @@
 // weekday: 0=dom … 6=sáb.
 
 export const TRIP = {
-  title: 'Domingo → quinta',
-  subtitle: 'Cinco dias em Veneza, três deles na Bienal, com o ingresso semanal',
+  title: 'Sábado à noite → quinta',
+  subtitle: 'Chegada no sábado à noite, cinco dias inteiros em Veneza, três deles na Bienal, com o ingresso semanal',
   departure: 'quinta-feira, 20h',
+  // Dia 0: chegada no sábado à noite (sem programação)
+  arrivalDay: {
+    name: 'Sábado',
+    theme: 'Chegada à noite · Londra Palace',
+    stay: 'londra',
+    steps: [
+      { time: 'noite', title: 'Aeroporto → Londra Palace', detail: 'Alilaguna linha Blu até San Zaccaria (~1h15, €15; compre no app). Opera até por volta da meia-noite — confira o último horário para o seu voo. Táxi aquático até o cais do hotel leva ~30 min e é a opção segura para chegadas tardias.' },
+      { time: 'no caminho', title: 'Passe de vaporetto', detail: 'Compre o passe ACTV de 7 dias no app AVM Venezia Official ainda no aeroporto; ele começa a valer na primeira validação, domingo de manhã.' },
+      { time: 'ao chegar', title: 'Jantar leve e descanso', detail: 'Riva degli Schiavoni e Campo Santa Maria Formosa têm bacari abertos até tarde. Amanhã começa às 10h em Cannaregio.' },
+    ],
+  },
   hotels: [
     {
       id: 'londra',
       name: 'Londra Palace',
-      nights: 'dom · seg · ter',
+      nights: 'sáb · dom · seg · ter',
       address: 'Riva degli Schiavoni, Castello 4171',
       note: 'Parada San Zaccaria na porta (linhas 1, 2, Alilaguna Blu). Arsenale a 10 min a pé, Giardini a 20 min pelo Riva, Piazza San Marco a 3 min. Base ideal para os dias de Bienal.',
       mapsQuery: 'Londra Palace, Riva degli Schiavoni 4171, Venezia',
@@ -49,12 +60,12 @@ export const TRIP = {
   ],
   checklist: [
     { text: 'Comprar o ingresso semanal da Bienal online (não há venda na bilheteria)', url: 'https://www.labiennale.org/en/tickets' },
-    { text: 'Reservar o Giardino Mistico do Pavilhão do Vaticano (CoopCulture) para o domingo à tarde', venueId: 'vaticano' },
-    { text: 'Comprar Anish Kapoor · Palazzo Manfrin (€15) para o domingo à tarde', venueId: 'kapoor' },
+    { text: 'Comprar Anish Kapoor · Palazzo Manfrin (€15) para o domingo às 10h', venueId: 'kapoor' },
+    { text: 'Reservar o Giardino Mistico do Pavilhão do Vaticano (CoopCulture) para o domingo às 11h30', venueId: 'vaticano' },
+    { text: 'Abramović na Accademia: ingresso pela TicketOne para o domingo às 16h30 (até 19 out)', venueId: 'abramovic' },
     { text: 'Comprar o bilhete Pinault (Dogana + Grassi, €20) para segunda de manhã', venueId: 'pdogana' },
     { text: 'Reservar horário na Peggy Guggenheim para segunda ao meio-dia (até 19 out)', venueId: 'peggy' },
-    { text: 'Abramović na Accademia: só se cortar os Giardini às 16h30 na terça — ingresso pela TicketOne (até 19 out)', venueId: 'abramovic' },
-    { text: 'Se chegar até 30 set e cedo: reservar faixa horária do Homo Faber (San Giorgio) para domingo', venueId: 'homofaber' },
+    { text: 'Se a viagem for até 30 set: reservar faixa horária do Homo Faber (San Giorgio) — cabe no domingo no lugar da Accademia', venueId: 'homofaber' },
     { text: 'Baixar o app AVM Venezia e carregar o passe de vaporetto', url: 'https://actv.avmspa.it/en' },
     { text: 'Pedir ao JW Marriott a grade do shuttle San Marco ↔ Isola delle Rose e reservar o táxi aquático para o aeroporto na quinta às 16h30' },
     { text: 'Combinar a transferência das malas na quarta: deixar no Londra Palace até o fim do dia ou pedir ao JW que recolha (serviço pago)' },
@@ -63,22 +74,26 @@ export const TRIP = {
     {
       weekday: 0,
       name: 'Domingo',
-      theme: 'Chegada no Londra Palace · tarde em Cannaregio',
+      theme: 'Cannaregio de manhã · Abramović à tarde',
       stay: 'londra',
-      why: 'Do aeroporto, a Alilaguna Blu deixa você na porta do hotel (San Zaccaria). Malas no quarto e vaporetto até Cannaregio: as três mostras mais comentadas fora da Bienal ficam lá e abrem no domingo — Kapoor (fecha só às segundas), Palazzo Diedo (só qui–dom) e o Vaticano. Se a chegada for tarde, corte o Vaticano e comece pelo Kapoor; se for muito tarde, fique no passeio de San Marco (opcionais), a 3 minutos do hotel.',
+      why: 'Dia inteiro, e o único em que Palazzo Diedo (qui–dom) e a Accademia (fechada às segundas) cabem juntos. Manhã em Cannaregio com as três mostras mais comentadas fora da Bienal — Kapoor, Vaticano e Palazzo Diedo — e tarde na Accademia com Marina Abramović. Tudo aberto no domingo.',
       steps: [
-        { time: 'chegada', title: 'Aeroporto → Londra Palace', detail: 'Alilaguna linha Blu até San Zaccaria (~1h15, €15; compre no app) ou táxi aquático até o cais do hotel (~30 min). Compre o passe ACTV de 7 dias no app AVM antes de sair do aeroporto.' },
-        { time: '13h00', title: 'Vaporetto até Cannaregio', detail: 'Linha 2 de San Zaccaria a Ferrovia (~30 min, pelo Grand Canal). Desça na estação: o Vaticano fica ao lado.' },
-        { time: '13h30', venueId: 'vaticano', title: 'Pavilhão do Vaticano · Giardino Mistico', detail: 'Carmelitas Descalços, ao lado da estação. Reserva prévia obrigatória pela CoopCulture. Brian Eno, Patti Smith, FKA Twigs e mais 21 artistas em paisagem sonora. ~1h.' },
-        { time: '14h45', venueId: 'kapoor', title: 'Anish Kapoor · Palazzo Manfrin', detail: 'Rio Terà San Leonardo, 5 min a pé. Compre antes online. ~100 maquetes e a nova "At the Edge of the World". Última entrada 17h30.' },
-        { time: '16h15', venueId: 'strange', title: 'Strange Rules · Palazzo Diedo', detail: '10 min a pé pela Fondamenta della Misericordia. Herndon & Dryhurst, Parreno, Paglen, Steyerl, Hershman Leeson. Abre só qui–dom, até 19h.' },
-        { time: '17h30', venueId: 'gaza', title: 'Gaza — No Words · Palazzo Mora', detail: 'Strada Nova, gratuito, fecha às 18h. Mostra pequena, cabe em 25 min. Se estiver cansado, deixe para a volta de outro dia (fecha às terças).' },
-        { time: '19h00', title: 'Jantar na Fondamenta della Misericordia e volta', detail: 'Vino Vero, Paradiso Perduto ou Al Timon. Volta pela linha 1 de Ca\u2019 d\u2019Oro a San Zaccaria (~25 min), ou jante perto do hotel em Castello.' },
+        { time: '09h30', title: 'Vaporetto até Cannaregio', detail: 'Linha 1 de San Zaccaria a San Marcuola (~25 min) ou linha 2 a Ferrovia. Café na Fondamenta della Misericordia antes de abrir.' },
+        { time: '10h00', venueId: 'kapoor', title: 'Anish Kapoor · Palazzo Manfrin', detail: 'Rio Terà San Leonardo, ao lado de Guglie. Compre antes online. ~100 maquetes e a nova "At the Edge of the World". Reserve 1h15.' },
+        { time: '11h30', venueId: 'vaticano', title: 'Pavilhão do Vaticano · Giardino Mistico', detail: 'Carmelitas Descalços, 8 min a pé, junto à estação. Reserva prévia obrigatória pela CoopCulture. Brian Eno, Patti Smith, FKA Twigs e mais 21 artistas em paisagem sonora. ~1h.' },
+        { time: '12h45', title: 'Almoço na Fondamenta della Misericordia', detail: 'Vino Vero, Paradiso Perduto ou Al Timon. 12 min a pé pelo Ghetto.' },
+        { time: '14h00', venueId: 'strange', title: 'Strange Rules · Palazzo Diedo', detail: 'Herndon & Dryhurst, Parreno, Paglen, Steyerl, Hershman Leeson. Abre só qui–dom. ~1h15.' },
+        { time: '15h20', venueId: 'gaza', title: 'Gaza — No Words · Palazzo Mora', detail: 'Strada Nova, gratuito, 8 min a pé. Mostra pequena, 25 min. Fecha às terças.' },
+        { time: '16h00', title: 'Linha 1 de Ca\u2019 d\u2019Oro até Accademia', detail: 'Parada ao lado do Palazzo Mora; ~20 min pelo Grand Canal.' },
+        { time: '16h30', venueId: 'abramovic', title: 'Marina Abramović · Gallerie dell\u2019Accademia', detail: 'Venda de ingressos até 18h, museu até 19h. Compre antes pela TicketOne. "Transforming Energy" com Rhythm 0 e Pietà em diálogo com Ticiano. Termina em 19 out.' },
+        { time: '18h15', venueId: 'louisv', title: 'Volta a pé por Santo Stefano · Lu Yang no Espace Louis Vuitton', detail: 'Da Accademia a San Marco são 15 min. Gratuito, aberto até 19h (só até 4 out). No caminho, Chihuly na Ponte dell\u2019Accademia e Palazzo Franchetti.' },
+        { time: '19h15', title: 'Jantar perto do hotel', detail: 'San Marco → Riva degli Schiavoni, 5 min. Amanhã começa às 10h em Punta della Dogana.' },
       ],
       optional: [
-        { venueId: 'homofaber', title: 'Homo Faber · San Giorgio (só até 30 set)', detail: 'O shuttle gratuito sai de San Zaccaria, na porta do hotel, a cada 30 min. Se chegar de manhã e a data permitir, vale a tarde inteira; nesse caso empurre Kapoor e Diedo para o fim do dia.' },
-        { venueId: 'louisv', title: 'Chegada tardia: San Marco a pé', detail: 'Tudo a menos de 10 min do Londra Palace e aberto até 19h: Lu Yang no Espace Louis Vuitton (até 4 out), Erlich no Negozio Olivetti (última entrada 18h), Chihuly na Ponte dell\u2019Accademia. Kantarovsky (Palazzo Loredan) e o vidro do Palazzo Franchetti fecham às 17h30/18h.' },
-        { venueId: 'saville', title: 'Jenny Saville · Ca\u2019 Pesaro', detail: 'A 10 min de Strada Nova pela Ponte de Rialto ou traghetto de Santa Sofia. €10, fecha às 18h e às segundas.' },
+        { venueId: 'homofaber', title: 'Homo Faber · San Giorgio (só até 30 set)', detail: 'Se a data permitir, troque a Accademia pela ilha: shuttle gratuito de San Zaccaria a cada 30 min, reserva de faixa horária obrigatória.' },
+        { venueId: 'saville', title: 'Jenny Saville · Ca\u2019 Pesaro', detail: 'A 10 min de Strada Nova pela Ponte de Rialto ou traghetto de Santa Sofia. €10, fecha às 18h e às segundas. Cabe no lugar do Palazzo Mora.' },
+        { venueId: 'kantarovsky', title: 'Sanya Kantarovsky · Palazzo Loredan', detail: 'Campo Santo Stefano, gratuito até 17h30, fecha às terças. Se sair da Accademia cedo, fica no caminho.' },
+        { venueId: 'erlich', title: 'Leandro Erlich · Negozio Olivetti', detail: 'Piazza San Marco, última entrada 18h, fecha às segundas. Cabe se você sair da Accademia às 17h30; bem do FAI com ingresso pago.' },
       ],
     },
     {
@@ -95,7 +110,7 @@ export const TRIP = {
         { time: '14h30', venueId: 'grassi', title: 'Palazzo Grassi · Michael Armitage', detail: 'Atravesse a Ponte dell\u2019Accademia e siga até Campo San Samuele (15 min). Entrada com o bilhete da manhã.' },
         { time: '15h15', venueId: 'grassi2', title: 'Amar Kanwar · Co-travellers', detail: 'Mesmo palácio. Saia por volta das 16h.' },
         { time: '16h15', venueId: 'wurm', title: 'Erwin Wurm · Museo Fortuny', detail: '5 minutos a pé. Última entrada 17h, fecha às 18h. Fortuny fecha às terças, então é hoje ou nunca.' },
-        { time: '17h30', venueId: 'louisv', title: 'San Marco a pé · Lu Yang no Espace Louis Vuitton', detail: 'Do Fortuny a San Marco são 10 min. Gratuito, aberto até 19h (só até 4 out). No caminho, Chihuly no Palazzo Franchetti e na Ponte dell\u2019Accademia.' },
+        { time: '17h30', venueId: 'berengo', title: 'Vidro de Murano no Palazzo Franchetti · Chihuly', detail: 'Do Fortuny ao Campo Santo Stefano são 8 min. Vallien e Janecký, gratuito até 18h, fecha às terças. Na saída, as esculturas de Chihuly na Ponte dell\u2019Accademia com a luz do fim de tarde.' },
         { time: '19h00', title: 'Aperitivo no Riva, jantar perto do hotel', detail: 'Riva degli Schiavoni ao pôr do sol, a 3 min do Londra Palace. Recolha cedo: amanhã começa a maratona da Bienal.' },
       ],
       optional: [
