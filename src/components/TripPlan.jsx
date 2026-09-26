@@ -104,7 +104,7 @@ export default function TripPlan({ appData, onSelect, setView }) {
           <p className="mt-5 max-w-xl text-[14.5px] muted-text leading-relaxed">
             {TRIP.subtitle}. A lógica é simples: segunda a Bienal fecha e os museus privados abrem; terça a maioria deles fecha e
             a Bienal abre. Então domingo é Cannaregio (ao lado da estação), segunda é Pinault, e terça, quarta e quinta são
-            Bienal: Giardini, Corderie do Arsenale e os pavilhões do Arsenale, com saída de barco direto para o aeroporto.
+            Bienal: Giardini, Corderie do Arsenale e os pavilhões do Arsenale. Três noites no Londra Palace, na porta de San Zaccaria, e duas no JW Marriott, na Isola delle Rose, de onde sai o táxi aquático para o aeroporto.
           </p>
         </div>
         <div className="md:col-span-4 md:text-right text-[13px]">
@@ -142,6 +142,21 @@ export default function TripPlan({ appData, onSelect, setView }) {
         <div className="pt-10 mb-6" style={{ borderTop: '1px solid var(--ink-soft)' }}>
           <div className="label-tag" style={{ color: 'var(--terra)' }}>Antes de sair de casa</div>
           <div className="font-serif italic text-4xl md:text-5xl tracking-tightest ink-text mt-4 leading-[0.95]">Bilhetes, passes e a volta</div>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
+          {TRIP.hotels.map((h) => (
+            <div key={h.id} className="p-6 flex flex-col" style={{ border: '1px solid var(--ink-soft)' }}>
+              <div className="flex items-baseline justify-between gap-3">
+                <div className="label-tag terra-text">Hotel · {h.nights}</div>
+                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.mapsQuery)}`} target="_blank" rel="noreferrer" className="text-[11.5px] uppercase tracking-widest muted-text hover:text-ink hover:underline">
+                  ↗ Maps
+                </a>
+              </div>
+              <div className="font-serif italic text-2xl ink-text mt-2 leading-tight">{h.name}</div>
+              <div className="text-[13px] ink-text mt-1">{h.address}</div>
+              <p className="text-[13px] muted-text mt-3 leading-relaxed">{h.note}</p>
+            </div>
+          ))}
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {TRIP.tickets.map((t) => (
@@ -192,6 +207,12 @@ export default function TripPlan({ appData, onSelect, setView }) {
                 Dia {i + 1} · {d.name} {fmt(d.date)}
               </div>
               <div className="font-serif italic text-4xl md:text-5xl tracking-tightest ink-text mt-4 leading-[0.95]">{d.theme}</div>
+              {d.stay && (
+                <div className="mt-4 text-[12.5px] flex flex-wrap items-baseline gap-x-2">
+                  <span className="label-tag muted-text">Base</span>
+                  <span className="ink-text">{TRIP.hotels.find((h) => h.id === d.stay)?.name}</span>
+                </div>
+              )}
               <p className="text-[13.5px] muted-text mt-5 leading-relaxed">{d.why}</p>
             </div>
             <div className="md:col-span-8">
