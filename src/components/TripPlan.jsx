@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { usePersistentState } from '../lib/usePersistentState.js';
 import { TRIP, biennaleHoursOn } from '../data/tripPlan.js';
 import { mapsUrlFor, isOpenOnWeekday, venueStatus, formatShortDate, WEEKDAYS_PT } from '../lib/dataStore.js';
 import { TicketLink } from './VisitInfo.jsx';
@@ -82,7 +83,13 @@ function Step({ step, venue, date, onSelect, muted = false }) {
 
 export default function TripPlan({ appData, onSelect, setView }) {
   const options = useMemo(sundayOptions, []);
-  const [arrival, setArrival] = useState(options[0]);
+  // Data de chegada e checklist ficam salvos no aparelho.
+  const [arrivalIso, setArrivalIso] = usePersistentState('trip.arrival', null);
+  const arrival = options.find((o) => iso(o) === arrivalIso) || options[0];
+  const setArrival = (d) => setArrivalIso(iso(d));
+  const [checked, setChecked] = usePersistentState('trip.checklist', {});
+  const toggle = (k) => setChecked((c) => ({ ...c, [k]: !c[k] }));
+  const doneCount = TRIP.checklist.filter((c) => checked[c.text]).length;
   const days = TRIP.days.map((d, i) => ({ ...d, date: addDays(arrival, i) }));
   const V = appData.venuesById;
 
@@ -173,7 +180,15 @@ export default function TripPlan({ appData, onSelect, setView }) {
         <div className="mt-8 grid md:grid-cols-12 gap-8">
           <div className="md:col-span-4">
             <div className="label-tag muted-text">Checklist de reservas</div>
-            <div className="text-[13px] muted-text mt-2 leading-relaxed">Marque conforme for comprando. A ordem é a do roteiro.</div>
+            <div className="font-serif italic text-2xl ink-text mt-2 tnum">
+              {doneCount} / {TRIP.checklist.length}
+            </div>
+            <div className="text-[13px] muted-text mt-2 leading-relaxed">Marque conforme for comprando; fica salvo neste aparelho. A ordem é a do roteiro.</div>
+            {doneCount > 0 && (
+              <button onClick={() => setChecked({})} className="mt-3 text-[11.5px] uppercase tracking-widest muted-text hover:text-ink hover:underline">
+                limpar marcações
+              </button>
+            )}
           </div>
           <ul className="md:col-span-8 space-y-2.5 text-[13.5px]">
             {TRIP.checklist.map((c, i) => {
@@ -182,15 +197,15 @@ export default function TripPlan({ appData, onSelect, setView }) {
               const ended = v && venueStatus(v, addDays(arrival, 4)) === 'encerrada';
               return (
                 <li key={i} className={'flex items-start gap-3 ' + (ended ? 'opacity-50 line-through' : '')}>
-                  <input type="checkbox" className="mt-1" />
-                  <span className="ink-text leading-snug">
+                  <input id={'chk-' + i} type="checkbox" className="mt-1" checked={!!checked[c.text]} onChange={() => toggle(c.text)} />
+                  <label htmlFor={'chk-' + i} className={'leading-snug cursor-pointer ' + (checked[c.text] ? 'muted-text line-through' : 'ink-text')}>
                     {c.text}
                     {url && (
                       <a href={url} target="_blank" rel="noreferrer" className="ml-2 text-[11.5px] uppercase tracking-widest terra-text hover:underline whitespace-nowrap">
                         ↗ link
                       </a>
                     )}
-                  </span>
+                  </label>
                 </li>
               );
             })}

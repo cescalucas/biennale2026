@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { usePersistentState } from '../lib/usePersistentState.js';
 import { mapsUrlFor, isOpenOnWeekday, venueStatus, WEEKDAYS_PT, WEEKDAYS_SHORT_PT } from '../lib/dataStore.js';
 import { TicketLink, WebsiteLink, AccessBadge, StatusBadge } from './VisitInfo.jsx';
 
@@ -24,12 +25,13 @@ function todayWeekday() {
 }
 
 export default function Tickets({ appData, onSelect }) {
-  const [cat, setCat] = useState('all');
-  const [zone, setZone] = useState('all');
-  const [freeOnly, setFreeOnly] = useState(false);
-  const [weekday, setWeekday] = useState(null); // null = qualquer dia
-  const [q, setQ] = useState('');
-  const [onlyOpen, setOnlyOpen] = useState(true); // esconde mostras já encerradas
+  // Filtros ficam salvos no aparelho entre visitas.
+  const [cat, setCat] = usePersistentState('tickets.cat', 'all');
+  const [zone, setZone] = usePersistentState('tickets.zone', 'all');
+  const [freeOnly, setFreeOnly] = usePersistentState('tickets.freeOnly', false);
+  const [weekday, setWeekday] = usePersistentState('tickets.weekday', null); // null = qualquer dia
+  const [q, setQ] = usePersistentState('tickets.q', '');
+  const [onlyOpen, setOnlyOpen] = usePersistentState('tickets.onlyOpen', true); // esconde mostras já encerradas
 
   const tickets = appData.tickets;
 
