@@ -103,8 +103,8 @@ export default function TripPlan({ appData, onSelect, setView }) {
           </h2>
           <p className="mt-5 max-w-xl text-[14.5px] muted-text leading-relaxed">
             {TRIP.subtitle}. A lógica é simples: segunda a Bienal fecha e os museus privados abrem; terça a maioria deles fecha e
-            a Bienal abre. Então segunda é Pinault, terça Giardini, quarta Arsenale e quinta Cannaregio, a dois passos da
-            estação e do barco para o aeroporto.
+            a Bienal abre. Então domingo é Cannaregio (ao lado da estação), segunda é Pinault, e terça, quarta e quinta são
+            Bienal: Giardini, Corderie do Arsenale e os pavilhões do Arsenale, com saída de barco direto para o aeroporto.
           </p>
         </div>
         <div className="md:col-span-4 md:text-right text-[13px]">
