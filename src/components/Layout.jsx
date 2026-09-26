@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react';
+
 const LINKS = [
   { id: 'home', label: 'Introdução' },
   { id: 'giardini', label: 'Giardini' },
@@ -27,7 +29,39 @@ function ThemeToggle({ theme, setTheme }) {
   );
 }
 
+const MOBILE_BAR = [
+  { id: 'trip', label: 'Viagem', ico: '🗓' },
+  { id: 'tickets', label: 'Ingressos', ico: '🎟' },
+  { id: 'map', label: 'Mapa', ico: '⌖' },
+  { id: 'artists', label: 'Artistas', ico: 'A→Z' },
+];
+
+export function MobileBar({ view, setView }) {
+  return (
+    <div className="mobile-bar md:hidden" role="navigation" aria-label="Atalhos">
+      {MOBILE_BAR.map((l) => (
+        <button key={l.id} onClick={() => setView(l.id)} className={view === l.id ? 'is-active' : ''}>
+          <span className="ico" aria-hidden="true">{l.ico}</span>
+          {l.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function Header({ view, setView, theme, setTheme }) {
+  const mobileNav = useRef(null);
+  // No celular, rola o menu horizontal até a aba ativa (Ingressos e Viagem ficam fora da tela inicial).
+  useEffect(() => {
+    const nav = mobileNav.current;
+    if (!nav) return;
+    const active = nav.querySelector('.nav-link.active');
+    if (active && typeof active.scrollIntoView === 'function') {
+      try {
+        active.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+      } catch {}
+    }
+  }, [view]);
   return (
     <header className="sticky top-0 z-30" style={{ background: 'color-mix(in srgb, var(--paper) 92%, transparent)', backdropFilter: 'blur(8px)', borderBottom: '1px solid var(--line)' }}>
       <div className="px-6 md:px-10 lg:px-16 max-w-[1480px] mx-auto">
@@ -56,7 +90,7 @@ export function Header({ view, setView, theme, setTheme }) {
             <ThemeToggle theme={theme} setTheme={setTheme} />
           </div>
         </div>
-        <nav className="md:hidden flex gap-5 overflow-x-auto pb-3 -mt-2">
+        <nav ref={mobileNav} className="md:hidden flex gap-5 overflow-x-auto pb-3 -mt-2">
           {LINKS.map((l) => (
             <button key={l.id} onClick={() => setView(l.id)} className={'nav-link whitespace-nowrap ' + (view === l.id ? 'active' : '')}>
               {l.label}

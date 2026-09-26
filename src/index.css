@@ -179,6 +179,57 @@ body {
   background: var(--lagoon-soft);
   border: 1px solid var(--line);
 }
+/* Celular: o mapa rola para os lados em vez de encolher até os pontos ficarem intocáveis */
+.map-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  min-width: 0;
+}
+@media (max-width: 767px) {
+  .map-scroll > .map-container {
+    min-width: 880px;
+  }
+}
+@media (pointer: coarse) {
+  .pin circle {
+    r: 7px;
+  }
+}
+
+/* Barra fixa inferior (só celular) com os atalhos mais usados em campo */
+.mobile-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 35;
+  display: flex;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.mobile-bar button {
+  flex: 1;
+  padding: 12px 4px 10px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.mobile-bar button .ico {
+  font-size: 16px;
+  line-height: 1;
+}
+.mobile-bar button.is-active {
+  color: var(--terra);
+}
 
 .drop {
   font-size: 5rem;

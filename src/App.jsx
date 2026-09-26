@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { loadData } from './lib/dataStore.js';
-import { Header, Footer } from './components/Layout.jsx';
+import { Header, Footer, MobileBar } from './components/Layout.jsx';
 import Home from './components/Home.jsx';
 import PavilionList from './components/PavilionList.jsx';
 import CityPavilions from './components/CityPavilions.jsx';
@@ -99,6 +99,7 @@ export default function App() {
         {view === 'trip' && <TripPlan appData={data} onSelect={openDetail} setView={goTo} />}
       </main>
       <Footer />
+      <MobileBar view={view} setView={goTo} />
       <Drawer venueId={drawerId} appData={data} onClose={() => setDrawerId(null)} onSeeOnMap={seeOnMap} />
     </div>
   );
