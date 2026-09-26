@@ -16,6 +16,7 @@ import { PAVILIONS_CITY } from '../src/data/pavilionsCity.js';
 import { COLLATERAL } from '../src/data/collateral.js';
 import { PARALLEL } from '../src/data/parallel.js';
 import { ITINERARIES } from '../src/data/itineraries.js';
+import { VISITOR_INFO, CITY_PAVILION_DEFAULT } from '../src/data/visitorInfo.js';
 
 const url = process.env.SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -27,6 +28,8 @@ if (!url || !key) {
 const supabase = createClient(url, key, { auth: { persistSession: false } });
 
 function asVenue(v, area) {
+  // Informações de visita: específicas do venue → padrão da área (cidade) → nada
+  const visit = { ...(area === 'city' ? CITY_PAVILION_DEFAULT : {}), ...(VISITOR_INFO[v.id] || {}) };
   return {
     id: v.id,
     area,
@@ -42,6 +45,17 @@ function asVenue(v, area) {
     x: v.x ?? null,
     y: v.y ?? null,
     highlight: Boolean(v.highlight),
+    hours: visit.hours ?? null,
+    closed: visit.closed ?? null,
+    closed_days: visit.closedDays ?? null,
+    price: visit.price ?? null,
+    free: visit.free ?? null,
+    ticket_url: visit.ticketUrl ?? null,
+    ticket_kind: visit.ticketKind ?? null,
+    website: visit.website ?? null,
+    booking: visit.booking ?? null,
+    ends: visit.ends ?? null,
+    verified: visit.verified ?? null,
   };
 }
 

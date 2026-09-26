@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import VeniceMap from './VeniceMap.jsx';
 import { TIME } from '../lib/travelTimes.js';
 import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
+import { TicketLink } from './VisitInfo.jsx';
 
 const FILTER_BUTTONS = [
   { id: 'all', label: 'Todos' },
@@ -110,6 +111,22 @@ export default function MapView({ appData, selectedId, setSelectedId, hoveredId,
                 )}
                 {sel.address && <div className="mt-1">{sel.address}</div>}
                 {sel.dates && <div className="terra-text mt-1">{sel.dates}</div>}
+                {sel.visit?.hours && (
+                  <div className="mt-1">
+                    <span className="label-tag">Horário</span> {sel.visit.hours}
+                    {sel.visit.closed && <span> · {sel.visit.closed}</span>}
+                  </div>
+                )}
+                {sel.visit?.price && (
+                  <div className="mt-1">
+                    <span className="label-tag">Ingresso</span> {sel.visit.price}
+                  </div>
+                )}
+                {sel.visit?.ticketUrl && (
+                  <div className="mt-2">
+                    <TicketLink visit={sel.visit} />
+                  </div>
+                )}
                 <div className="mt-2 italic">{appData.zoneNames[sel.zone]}</div>
               </div>
               <div className="mt-5 hairline pt-3">

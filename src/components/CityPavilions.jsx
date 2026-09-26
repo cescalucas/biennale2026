@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { AccessBadge } from './VisitInfo.jsx';
 
 export default function CityPavilions({ data, onSelect }) {
   const [q, setQ] = useState('');
@@ -20,7 +21,7 @@ export default function CityPavilions({ data, onSelect }) {
           </h2>
           <p className="mt-5 max-w-xl text-[14.5px] muted-text leading-relaxed">
             {data.length} pavilhões nacionais espalhados em palácios, igrejas e instituições por toda Veneza. Incluem estreias
-            absolutas — Marrocos, Moldávia, Nauru, Guiné Equatorial, Serra Leoa, Somália, El Salvador e Vietnã — e o experimental
+            absolutas — Guiné, Moldávia, Nauru, Guiné Equatorial, Serra Leoa, Somália, El Salvador e Vietnã — e o experimental
             Pavilhão do Vaticano com Brian Eno, FKA Twigs, Patti Smith e mais 21 artistas.
           </p>
         </div>
@@ -66,9 +67,19 @@ export default function CityPavilions({ data, onSelect }) {
               )}
             </div>
             {c.note && <div className="hairline mt-4 pt-3 italic muted-text text-[12.5px] leading-relaxed">{c.note}</div>}
-            <div className="mt-auto pt-4 hairline-t flex justify-between items-end text-[12px]">
-              <div className="muted-text leading-snug">{c.address || ''}</div>
-              <div className="terra-text whitespace-nowrap">Saber mais →</div>
+            <div className="mt-auto pt-4 hairline-t text-[12px]">
+              <div className="flex justify-between items-end gap-3">
+                <div className="muted-text leading-snug">{c.address || ''}</div>
+                <div className="terra-text whitespace-nowrap">Saber mais →</div>
+              </div>
+              {c.visit && (
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 muted-text">
+                  <AccessBadge visit={c.visit} />
+                  {c.visit.hours && <span>{c.visit.hours}</span>}
+                  {c.visit.closed && <span>· {c.visit.closed}</span>}
+                  {c.visit.booking && <span className="terra-text italic">· {c.visit.booking}</span>}
+                </div>
+              )}
             </div>
           </article>
         ))}

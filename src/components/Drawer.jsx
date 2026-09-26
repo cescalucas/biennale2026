@@ -1,4 +1,5 @@
 import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
+import { VisitRows, TicketLink, WebsiteLink, StatusBadge } from './VisitInfo.jsx';
 
 export default function Drawer({ venueId, appData, onClose, onSeeOnMap }) {
   const v = venueId ? appData.venuesById[venueId] : null;
@@ -29,6 +30,7 @@ export default function Drawer({ venueId, appData, onClose, onSeeOnMap }) {
                 </div>
                 <h3 className="font-serif italic text-4xl md:text-5xl tracking-tightest ink-text leading-[1] mt-3">{v.name}</h3>
                 {v.title && <div className="italic text-lg muted-text mt-2 font-medium">"{v.title}"</div>}
+                <div className="mt-3"><StatusBadge venue={v} /></div>
               </div>
               <button onClick={onClose} className="text-2xl muted-text hover:terra-text leading-none">×</button>
             </div>
@@ -68,6 +70,18 @@ export default function Drawer({ venueId, appData, onClose, onSeeOnMap }) {
                 <div className="ink-text mt-0.5 italic">{appData.zoneNames[v.zone]}</div>
               </div>
             </div>
+            {v.visit && (v.visit.hours || v.visit.price || v.visit.ticketUrl) && (
+              <div className="mt-6 p-5" style={{ border: '1px solid var(--line)', background: 'var(--paper-2)' }}>
+                <div className="label-tag terra-text">Planejar a visita</div>
+                <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-3 text-[13px]">
+                  <VisitRows visit={v.visit} />
+                </dl>
+                <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+                  <TicketLink visit={v.visit} />
+                  <WebsiteLink visit={v.visit} />
+                </div>
+              </div>
+            )}
             {v.note && (
               <div className="mt-6 border-l-2 pl-4 italic text-[14px] muted-text leading-relaxed" style={{ borderColor: 'var(--terra)' }}>
                 {v.note}
@@ -94,6 +108,9 @@ export default function Drawer({ venueId, appData, onClose, onSeeOnMap }) {
               </div>
             )}
             <div className="mt-12 pt-6 flex flex-wrap gap-0" style={{ borderTop: '1px solid var(--ink)' }}>
+              {v.visit?.ticketUrl && (v.visit.ticketKind === 'compra' || v.visit.ticketKind === 'reserva') && (
+                <TicketLink visit={v.visit} strong />
+              )}
               <a href={mapsUrlFor(v)} target="_blank" rel="noreferrer" className="pillbtn bg-terra text-paper px-5 py-3 text-[12px] uppercase tracking-widest font-semibold no-underline inline-flex items-center gap-2" style={{ color: '#FFFFFF', border: '1px solid var(--terra)' }}>
                 <span aria-hidden="true">↗</span> Abrir no Google Maps
               </a>

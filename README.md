@@ -32,6 +32,8 @@ biennale-app/
 │   │   ├── MapView.jsx      # Mapa + barra lateral + matriz
 │   │   ├── VeniceMap.jsx    # SVG estilizado de Veneza
 │   │   ├── Itineraries.jsx  # Roteiros sugeridos
+│   │   ├── Tickets.jsx      # Ingressos & agendamento: onde, que dia, preço, link de compra
+│   │   ├── VisitInfo.jsx    # Blocos reutilizáveis: horário/dias/preço, botão de ingresso, selos
 │   │   └── Drawer.jsx       # Painel lateral de detalhes
 │   ├── data/                # JSON modules — fallback local
 │   │   ├── festival.js
@@ -44,6 +46,8 @@ biennale-app/
 │   │   ├── pavilionsCity.js
 │   │   ├── collateral.js
 │   │   ├── parallel.js
+│   │   ├── visitorInfo.js   # id → horário, dia de fechamento, preço, link de ingresso, término
+│   │   ├── tickets.js       # Ingressos oficiais da Bienal (horários, tabela de preços, link)
 │   │   └── itineraries.js
 │   └── lib/
 │       ├── supabase.js      # client @supabase/supabase-js
@@ -153,10 +157,44 @@ O schema inclui a tabela `user_favorites` com RLS por usuário (`auth.uid()`). P
 | Pavilhões        | `src/data/pavilions*.js`     |
 | Mapeamento artista→local | `src/data/venueArtists.js` |
 | Roteiros         | `src/data/itineraries.js`    |
+| Horários, preços e links de ingresso | `src/data/visitorInfo.js` (por venue) + `src/data/tickets.js` (Bienal) |
 | Zonas/distâncias | `src/data/zones.js`          |
 | Cores / tipografia | `src/index.css` + `tailwind.config.js` |
 
 Depois de editar, rode `npm run seed` para refletir as mudanças no Supabase (se estiver usando).
+
+---
+
+## Ingressos & agendamento
+
+A aba **Ingressos** consolida, para a Bienal e para cada atividade fora dela (museus, colaterais e pavilhões na cidade):
+onde fica (endereço + Google Maps), quando abre (período, horário, dia de fechamento), quanto custa e o link oficial de
+compra ou reserva. Filtros: categoria, região, dia da semana ("que dia?"), só gratuitas, só em cartaz.
+
+Os dados vivem em `src/data/visitorInfo.js`, indexados pelo `id` do venue:
+
+```js
+kapoor: {
+  hours: '10h–18h (última entrada 17h30)',
+  closed: 'fechado às segundas',
+  closedDays: [1],            // 0=dom … 6=sáb — alimenta o filtro por dia
+  price: '€15 · reduzido €5',
+  free: false,
+  ticketUrl: 'https://…',     // compra/reserva ou página oficial
+  ticketKind: 'compra',       // 'compra' | 'reserva' | 'site' | 'gratis'
+  website: 'https://…',
+  booking: 'Compra online recomendada.',
+  ends: '2026-10-31',         // marca "encerrada" / "últimos dias"
+  verified: 'média',          // confiança: 'alta' | 'média' | 'baixa'
+},
+```
+
+Pavilhões na cidade sem entrada específica herdam `CITY_PAVILION_DEFAULT` (gratuitos, horário da Bienal). No Supabase, as
+mesmas informações ficam em colunas opcionais da tabela `venues` (`hours`, `closed`, `closed_days`, `price`, `free`,
+`ticket_url`, `ticket_kind`, `website`, `booking`, `ends`, `verified`); quando NULL, o front cai no módulo local.
+
+Levantamento feito em 26 set 2026 a partir dos sites oficiais e de agregadores; horários e preços mudam ao longo da
+temporada — confirme sempre na página oficial (o botão de cada linha leva até ela).
 
 ---
 

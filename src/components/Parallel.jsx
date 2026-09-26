@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { biosFor, mapsUrlFor } from '../lib/dataStore.js';
+import { VisitRows, TicketLink, WebsiteLink, StatusBadge } from './VisitInfo.jsx';
 
 export default function Parallel({ data, appData, onSelect }) {
   const byOrg = useMemo(() => {
@@ -48,7 +49,10 @@ export default function Parallel({ data, appData, onSelect }) {
             return (
               <article key={it.id} className="mt-10 pt-12 grid md:grid-cols-12 gap-10 md:gap-12 fade-in" style={{ borderTop: '1px solid var(--line)' }}>
                 <div className="md:col-span-4">
-                  <div className="font-serif italic text-3xl tnum" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <div className="font-serif italic text-3xl tnum" style={{ color: 'var(--terra)' }}>{String(i + 1).padStart(2, '0')}</div>
+                    <StatusBadge venue={it} />
+                  </div>
                   <h4 className="font-serif italic text-3xl md:text-4xl ink-text mt-4 leading-[1] tracking-tightest">{it.name}</h4>
                   <dl className="mt-5 hairline pt-4 space-y-3 text-[13px]">
                     {it.curator && (
@@ -71,6 +75,7 @@ export default function Parallel({ data, appData, onSelect }) {
                       <dt className="label-tag muted-text">Localização</dt>
                       <dd className="ink-text mt-0.5 italic">{appData.zoneNames[it.zone]}</dd>
                     </div>
+                    <VisitRows visit={it.visit} />
                   </dl>
                   {it.note && (
                     <p className="mt-5 italic text-[13px] muted-text leading-relaxed border-l pl-3" style={{ borderColor: 'var(--terra)' }}>
@@ -81,6 +86,8 @@ export default function Parallel({ data, appData, onSelect }) {
                     <button onClick={() => onSelect(it.id)} className="text-[12px] uppercase tracking-widest terra-text hover:underline text-left">
                       Ver detalhes →
                     </button>
+                    <TicketLink visit={it.visit} />
+                    <WebsiteLink visit={it.visit} />
                     <a href={mapsUrlFor(it)} target="_blank" rel="noreferrer" className="text-[12px] uppercase tracking-widest muted-text hover:text-ink hover:underline text-left">
                       ↗ Google Maps
                     </a>
